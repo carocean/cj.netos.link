@@ -95,7 +95,7 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     public List<RoomMember> pageAnyRoomMember(String room, int limit, long offset) {
         Chatroom chatroom = getRoom(room);
         ICube cube = cube(chatroom.getCreator());
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple members %s where {'tuple.room':'%s'}", limit, offset, RoomMember.class.getName(), room);
+        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple members %s where {'tuple.room':'%s'}  ", limit, offset, RoomMember.class.getName(), room);
         IQuery<RoomMember> query = cube.createQuery(cjql);
         List<IDocument<RoomMember>> docs = query.getResultList();
         List<RoomMember> members = new ArrayList<>();
