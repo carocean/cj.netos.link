@@ -7,33 +7,37 @@ import cj.netos.link.entities.RoomNotice;
 import java.util.List;
 
 public interface IChatroomService {
-    Chatroom getRoom(String room);
+    Chatroom getRoom(String principal,String room);
 
-    void addRoom(Chatroom chatroom);
+    void addRoom(String principal,Chatroom chatroom);
 
-    void removeRoom(String room);
+    void removeRoom(String principal,String room);
 
-    List<Chatroom> pageRoom(String person,int limit ,long offset);
+    List<Chatroom> pageRoom(String principal,int limit ,long offset);
 
-    void addMember(RoomMember member);
+    void addMember(String principal,RoomMember member);
 
-    boolean existsMember(String room, String person);
+    boolean existsMember(String principal,String room, String person);
 
-    void removeMember(String room, String person);
+    void removeMember(String principal,String room, String person);
 
-    List<RoomMember> pageAnyRoomMember(String room, int limit, long offset);
+    List<RoomMember> pageAnyRoomMember(String principal,String room, int limit, long offset);
 
-    List<RoomMember> getActorRoomMembers(String room, String actor);
+    List<RoomMember> getActorRoomMembers(String principal,String room, String actor);
 
-    void updateNickName(String room, String person, String nickName);
+    void updateNickName(String principal,String room, String person, String nickName);
 
-    void addNotice(RoomNotice roomNotice);
+    void addNotice(String principal,RoomNotice roomNotice);
 
-    RoomNotice getNewestNotice(String room);
+    RoomNotice getNewestNotice(String principal,String room);
 
-    List<RoomNotice> pageNotice(String room, int limit, long offset);
+    List<RoomNotice> pageNotice(String principal,String room, int limit, long offset);
 
-    RoomMember getMember(String room, String principal);
+    RoomMember getMember(String principal,String room,String person);
+
+    void updateLeading(String principal, String room, String leading);
+
+    void updateTitle(String principal, String room, String title);
 
 }
 

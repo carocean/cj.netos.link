@@ -73,6 +73,16 @@ public interface IChatroomLinkPorts extends IOpenportService {
                         @CjOpenportParameter(usage = "成员在聊天室中的昵称", name = "nickName") String nickName) throws CircuitException;
 
 
+    @CjOpenport(usage = "更新聊天室图标")
+    void updateLeading(ISecuritySession securitySession,
+                       @CjOpenportParameter(usage = "聊天室标识，格式如: cj@gbera.netos/00388022", name = "room") String room,
+                       @CjOpenportParameter(usage = "聊天室图标", name = "leading") String leading) throws CircuitException;
+
+    @CjOpenport(usage = "更新聊天室显示名")
+    void updateTitle(ISecuritySession securitySession,
+                     @CjOpenportParameter(usage = "聊天室标识，格式如: cj@gbera.netos/00388022", name = "room") String room,
+                     @CjOpenportParameter(usage = "聊天室显示名", name = "title") String title) throws CircuitException;
+
     @CjOpenport(usage = "发布公告", command = "post")
     void publishNotice(ISecuritySession securitySession,
                        @CjOpenportParameter(usage = "聊天室标识，格式如: cj@gbera.netos/00388022", name = "room") String room,

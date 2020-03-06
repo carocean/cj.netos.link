@@ -19,17 +19,17 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     @Override
     public void createRoom(ISecuritySession securitySession, String code, String title, String leading, String microsite) throws CircuitException {
         String room = String.format("%s/%s", securitySession.principal(), code);
-        if (chatroomService.getRoom(room) != null) {
+        if (chatroomService.getRoom(securitySession.principal(), room) != null) {
             throw new CircuitException("500", "已存在聊天室");
         }
         Chatroom chatroom = new Chatroom();
-        chatroom.setRoom(String.format("%s/%s",securitySession.principal(),code));
+        chatroom.setRoom(String.format("%s/%s", securitySession.principal(), code));
         chatroom.setCreator(securitySession.principal());
         chatroom.setCtime(System.currentTimeMillis());
         chatroom.setLeading(leading);
         chatroom.setMicrosite(microsite);
         chatroom.setTitle(title);
-        chatroomService.addRoom(chatroom);
+        chatroomService.addRoom(securitySession.principal(), chatroom);
     }
 
     @Override
@@ -37,12 +37,13 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (!room.startsWith(securitySession.principal())) {
             throw new CircuitException("500", "不能移除其他人的聊天室");
         }
-        chatroomService.removeRoom(room);
+        chatroomService.removeRoom(securitySession.principal(), room);
     }
 
     @Override
     public Chatroom getRoom(ISecuritySession securitySession, String room) throws CircuitException {
-        return chatroomService.getRoom(room);
+        String owner = room.substring(0, room.indexOf("/"));
+        return chatroomService.getRoom(owner, room);
     }
 
     @Override
@@ -50,16 +51,17 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (!room.startsWith(securitySession.principal())) {
             throw new CircuitException("500", "不能列出他人的聊天室");
         }
-        return chatroomService.pageRoom(securitySession.principal(),limit,offset);
+        return chatroomService.pageRoom(securitySession.principal(), limit, offset);
     }
 
     @Override
     public void addMember(ISecuritySession securitySession, String room, String person, String actor) throws CircuitException {
-        Chatroom chatroom = chatroomService.getRoom(room);
+        String owner = room.substring(0, room.indexOf("/"));
+        Chatroom chatroom = chatroomService.getRoom(owner, room);
         if (chatroom == null) {
             throw new CircuitException("500", "不存在聊天室");
         }
-        if (chatroomService.existsMember(room, person)) {
+        if (chatroomService.existsMember(owner, room, person)) {
             throw new CircuitException("500", "成员已在聊天室");
         }
         RoomMember member = new RoomMember();
@@ -69,7 +71,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         member.setNickName(null);
         member.setPerson(person);
         member.setRoom(room);
-        chatroomService.addMember(member);
+        chatroomService.addMember(securitySession.principal(), member);
     }
 
     @Override
@@ -77,17 +79,19 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (!room.startsWith(securitySession.principal())) {
             throw new CircuitException("500", "不能移除他人的聊天室成员");
         }
-        chatroomService.removeMember(room, person);
+        chatroomService.removeMember(securitySession.principal(), room, person);
     }
 
     @Override
     public List<RoomMember> pageAnyRoomMember(ISecuritySession securitySession, String room, int limit, long offset) throws CircuitException {
-        return chatroomService.pageAnyRoomMember(room, limit, offset);
+        String owner = room.substring(0, room.indexOf("/"));
+        return chatroomService.pageAnyRoomMember(owner, room, limit, offset);
     }
 
     @Override
     public List<RoomMember> getActorRoomMembers(ISecuritySession securitySession, String room, String actor) throws CircuitException {
-        return chatroomService.getActorRoomMembers(room, actor);
+        String owner = room.substring(0, room.indexOf("/"));
+        return chatroomService.getActorRoomMembers(owner, room, actor);
     }
 
     @Override
@@ -95,16 +99,34 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (!room.startsWith(securitySession.principal())) {
             throw new CircuitException("500", "不能修改他人在本聊天室的昵称");
         }
-        chatroomService.updateNickName(room, person, nickName);
+        chatroomService.updateNickName(securitySession.principal(), room, person, nickName);
+    }
+
+    @Override
+    public void updateLeading(ISecuritySession securitySession, String room, String leading) throws CircuitException {
+        if (!room.startsWith(securitySession.principal())) {
+            throw new CircuitException("500", "不能修改他人的聊天室");
+        }
+        chatroomService.updateLeading(securitySession.principal(), room, leading);
+    }
+
+    @Override
+    public void updateTitle(ISecuritySession securitySession, String room, String title) throws CircuitException {
+        if (!room.startsWith(securitySession.principal())) {
+            throw new CircuitException("500", "不能修改他人的聊天室");
+        }
+        chatroomService.updateTitle(securitySession.principal(), room, title);
     }
 
     @Override
     public void publishNotice(ISecuritySession securitySession, String room, String notice) throws CircuitException {
-        Chatroom chatroom = chatroomService.getRoom(room);
+        String owner = room.substring(0, room.indexOf("/"));
+        Chatroom chatroom = chatroomService.getRoom(owner, room);
         if (chatroom == null) {
             throw new CircuitException("404", "聊天室不存在");
         }
-        RoomMember member = chatroomService.getMember(room, securitySession.principal());
+
+        RoomMember member = chatroomService.getMember(owner, room, securitySession.principal());
         if (member == null) {
             throw new CircuitException("404", "不是聊天室成员");
         }
@@ -116,16 +138,18 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         roomNotice.setCtime(System.currentTimeMillis());
         roomNotice.setNotice(notice);
         roomNotice.setRoom(room);
-        chatroomService.addNotice(roomNotice);
+        chatroomService.addNotice(owner, roomNotice);
     }
 
     @Override
     public RoomNotice getNewestNotice(ISecuritySession securitySession, String room) throws CircuitException {
-        return chatroomService.getNewestNotice(room);
+        String owner = room.substring(0, room.indexOf("/"));
+        return chatroomService.getNewestNotice(owner, room);
     }
 
     @Override
     public List<RoomNotice> pageNotice(ISecuritySession securitySession, String room, int limit, long offset) throws CircuitException {
-        return chatroomService.pageNotice(room, limit, offset);
+        String owner = room.substring(0, room.indexOf("/"));
+        return chatroomService.pageNotice(owner, room, limit, offset);
     }
 }

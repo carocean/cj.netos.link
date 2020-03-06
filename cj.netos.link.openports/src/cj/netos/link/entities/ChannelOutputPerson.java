@@ -1,15 +1,15 @@
 package cj.netos.link.entities;
 
 public class ChannelOutputPerson {
-    String channel;
+    String onchannel;
     String person;
     long atime;
-    public String getChannel() {
-        return channel;
+    public String getOnchannel() {
+        return onchannel;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setOnchannel(String onchannel) {
+        this.onchannel = onchannel;
     }
 
     public String getPerson() {

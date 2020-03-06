@@ -1,37 +1,28 @@
 package cj.netos.link.entities;
 
 public class Channel {
-    String code;
-    String name;
+    String channel;
+    String title;
     String leading;
     String creator;
-    String loopType;
     String outPersonSelector;//only_select, all_except,
     String outGeoSelector;//true,false;
     long ctime;
 
-    public String getLoopType() {
-        return loopType;
+    public String getChannel() {
+        return channel;
     }
 
-    public void setLoopType(String loopType) {
-        this.loopType = loopType;
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
-    public String getCode() {
-        return code;
+    public String getTitle() {
+        return title;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getLeading() {
