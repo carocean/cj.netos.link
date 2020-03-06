@@ -2,12 +2,21 @@ package cj.netos.link.entities;
 
 public class Channel {
     String channel;
+    String origin;
     String title;
     String leading;
     String creator;
     String outPersonSelector;//only_select, all_except,
     String outGeoSelector;//true,false;
     long ctime;
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
 
     public String getChannel() {
         return channel;

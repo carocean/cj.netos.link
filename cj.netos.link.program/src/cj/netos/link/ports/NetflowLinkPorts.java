@@ -17,13 +17,13 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     INetflowLinkService netflowLinkService;
 
     @Override
-    public void createChannel(ISecuritySession securitySession, String code, String title, String leading,String outPersonSelector, String outGeoSelector) throws CircuitException {
-        String channel = String.format("%s/%s", securitySession.principal(), code);
-        if (netflowLinkService.existsChannel(securitySession.principal(), channel)) {
+    public void createChannel(ISecuritySession securitySession, String channel, String origin, String title, String leading, String outPersonSelector, String outGeoSelector) throws CircuitException {
+        if (netflowLinkService.existsChannel(securitySession.principal(), origin)) {
             throw new CircuitException("500", "已存在管道");
         }
         Channel ch = new Channel();
         ch.setChannel(channel);
+        ch.setOrigin(origin);
         ch.setCreator(securitySession.principal());
         ch.setCtime(System.currentTimeMillis());
         ch.setLeading(leading);
@@ -35,41 +35,26 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
 
     @Override
     public void updateOutGeoSelector(ISecuritySession securitySession, String channel, String outGeoSelector) throws CircuitException {
-        if (!channel.startsWith(securitySession.principal())) {
-            throw new CircuitException("500", "无权更新它人创建的管道");
-        }
         netflowLinkService.updateOutGeoSelector(securitySession.principal(), channel, outGeoSelector);
     }
 
     @Override
     public void updateOutPersonSelector(ISecuritySession securitySession, String channel, String outPersonSelector) throws CircuitException {
-        if (!channel.startsWith(securitySession.principal())) {
-            throw new CircuitException("500", "无权更新它人创建的管道");
-        }
         netflowLinkService.updateOutPersonSelector(securitySession.principal(), channel, outPersonSelector);
     }
 
     @Override
     public void updateChannelLeading(ISecuritySession securitySession, String channel, String leading) throws CircuitException {
-        if (!channel.startsWith(securitySession.principal())) {
-            throw new CircuitException("500", "无权更新它人创建的管道");
-        }
         netflowLinkService.updateChannelLeading(securitySession.principal(), channel, leading);
     }
 
     @Override
     public void updateChanneTitle(ISecuritySession securitySession, String channel, String title) throws CircuitException {
-        if (!channel.startsWith(securitySession.principal())) {
-            throw new CircuitException("500", "无权更新它人创建的管道");
-        }
         netflowLinkService.updateChanneTitle(securitySession.principal(), channel, title);
     }
 
     @Override
     public void removeChannel(ISecuritySession securitySession, String channel) throws CircuitException {
-        if (!channel.startsWith(securitySession.principal())) {
-            throw new CircuitException("500", "无权移除它人创建的管道");
-        }
         netflowLinkService.removeChannel(securitySession.principal(), channel);
     }
 
