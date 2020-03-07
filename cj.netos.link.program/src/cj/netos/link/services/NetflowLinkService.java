@@ -14,6 +14,7 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CjService(name = "netflowLinkService")
 public class NetflowLinkService extends AbstractLinkService implements INetflowLinkService {
@@ -169,5 +170,17 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
             );
         }
         return outputPersonList;
+    }
+
+    @Override
+    public void addPerson(String principal, Map<String, Object> person) {
+        ICube cube = cube(principal);
+        cube.saveDoc("persons", new TupleDocument<>(person));
+    }
+
+    @Override
+    public void removePerson(String principal, String person) {
+        ICube cube = cube(principal);
+        cube.deleteDocOne("persons", String.format("{'tuple.official':'%s'}", person));
     }
 }

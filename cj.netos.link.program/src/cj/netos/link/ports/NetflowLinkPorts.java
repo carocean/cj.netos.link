@@ -10,6 +10,7 @@ import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.ISecuritySession;
 
 import java.util.List;
+import java.util.Map;
 
 @CjService(name = "/netflow/self.service")
 public class NetflowLinkPorts implements INetflowLinkPorts {
@@ -122,5 +123,15 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     public List<ChannelOutputPerson> pageOutputPerson(ISecuritySession securitySession, String channel, int limit, long offset) throws CircuitException {
         String owner = channel.substring(0, channel.indexOf("/"));
         return netflowLinkService.pageOutputPerson(owner, channel, limit, offset);
+    }
+
+    @Override
+    public void addPerson(ISecuritySession securitySession, Map<String, Object> person) throws CircuitException {
+        netflowLinkService.addPerson(securitySession.principal(),person);
+    }
+
+    @Override
+    public void removePerson(ISecuritySession securitySession, String person) throws CircuitException {
+        netflowLinkService.removePerson(securitySession.principal(),person);
     }
 }

@@ -6,11 +6,13 @@ import cj.netos.link.entities.ChannelOutputPerson;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.IOpenportService;
 import cj.studio.openport.ISecuritySession;
+import cj.studio.openport.PKeyInRequest;
 import cj.studio.openport.annotations.CjOpenport;
 import cj.studio.openport.annotations.CjOpenportParameter;
 import cj.studio.openport.annotations.CjOpenports;
 
 import java.util.List;
+import java.util.Map;
 
 @CjOpenports(usage = "网流个人自助服务")
 public interface INetflowLinkPorts extends IOpenportService {
@@ -121,6 +123,18 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
             @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
             @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "添加公众", command = "post")
+    void addPerson(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "公众信息。", name = "person", in = PKeyInRequest.content) Map<String, Object> person
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "移除公众")
+    void removePerson(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "公号。", name = "person") String person
     ) throws CircuitException;
 
 }
