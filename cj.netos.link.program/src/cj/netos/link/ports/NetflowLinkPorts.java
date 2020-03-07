@@ -4,6 +4,7 @@ import cj.netos.link.INetflowLinkService;
 import cj.netos.link.entities.Channel;
 import cj.netos.link.entities.ChannelInputPerson;
 import cj.netos.link.entities.ChannelOutputPerson;
+import cj.netos.link.entities.PersonInfo;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
 import cj.studio.ecm.net.CircuitException;
@@ -126,7 +127,7 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
-    public void addPerson(ISecuritySession securitySession, Map<String, Object> person) throws CircuitException {
+    public void addPerson(ISecuritySession securitySession, PersonInfo person) throws CircuitException {
         netflowLinkService.addPerson(securitySession.principal(),person);
     }
 

@@ -9,6 +9,7 @@ import cj.netos.link.INetflowLinkService;
 import cj.netos.link.entities.Channel;
 import cj.netos.link.entities.ChannelInputPerson;
 import cj.netos.link.entities.ChannelOutputPerson;
+import cj.netos.link.entities.PersonInfo;
 import cj.studio.ecm.annotation.CjService;
 import org.bson.Document;
 
@@ -173,7 +174,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
-    public void addPerson(String principal, Map<String, Object> person) {
+    public void addPerson(String principal, PersonInfo person) {
         ICube cube = cube(principal);
         cube.saveDoc("persons", new TupleDocument<>(person));
     }

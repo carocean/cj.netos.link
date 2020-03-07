@@ -3,6 +3,7 @@ package cj.netos.link.ports;
 import cj.netos.link.entities.Channel;
 import cj.netos.link.entities.ChannelInputPerson;
 import cj.netos.link.entities.ChannelOutputPerson;
+import cj.netos.link.entities.PersonInfo;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.IOpenportService;
 import cj.studio.openport.ISecuritySession;
@@ -128,7 +129,7 @@ public interface INetflowLinkPorts extends IOpenportService {
     @CjOpenport(usage = "添加公众", command = "post")
     void addPerson(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "公众信息。", name = "person", in = PKeyInRequest.content) Map<String, Object> person
+            @CjOpenportParameter(usage = "公众信息。", name = "person", in = PKeyInRequest.content) PersonInfo person
     ) throws CircuitException;
 
     @CjOpenport(usage = "移除公众")
