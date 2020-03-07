@@ -9,7 +9,6 @@ import cj.netos.link.INetflowLinkService;
 import cj.netos.link.entities.Channel;
 import cj.netos.link.entities.ChannelInputPerson;
 import cj.netos.link.entities.ChannelOutputPerson;
-import cj.netos.link.entities.Chatroom;
 import cj.studio.ecm.annotation.CjService;
 import org.bson.Document;
 
@@ -95,9 +94,9 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
-    public boolean existsInputPerson(String principal, String onchannel, String person, String channel) {
+    public boolean existsInputPerson(String principal, String channel, String person) {
         ICube cube = cube(principal);
-        return cube.tupleCount("input.persons", String.format("{'tuple.onchannel':'%s','tuple.person':'%s','tuple.channel':'%s'}", onchannel, person, channel)) > 0;
+        return cube.tupleCount("input.persons", String.format("{'tuple.channel':'%s','tuple.person':'%s'}", channel, person)) > 0;
     }
 
     @Override
@@ -107,15 +106,15 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
-    public void removeInputPerson(String principal, String onchannel, String person, String channel) {
+    public void removeInputPerson(String principal, String channel, String person) {
         ICube cube = cube(principal);
-        cube.deleteDocOne("input.persons", String.format("{'tuple.onchannel':'%s','tuple.person':'%s','tuple.channel':'%s'}", onchannel, person, channel));
+        cube.deleteDocOne("input.persons", String.format("{'tuple.channel':'%s','tuple.person':'%s'}", channel, person));
     }
 
     @Override
-    public List<ChannelInputPerson> pageInputPerson(String principal, String onchannel, int limit, long offset) {
+    public List<ChannelInputPerson> pageInputPerson(String principal, String channel, int limit, long offset) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple input.persons %s where {'tuple.onchannel':'%s'}", limit, offset, ChannelInputPerson.class.getName(), onchannel);
+        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple input.persons %s where {'tuple.channel':'%s'}", limit, offset, ChannelInputPerson.class.getName(), channel);
         IQuery<ChannelInputPerson> query = cube.createQuery(cjql);
         List<IDocument<ChannelInputPerson>> docs = query.getResultList();
         List<ChannelInputPerson> inputPersonList = new ArrayList<>();
@@ -127,9 +126,9 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
-    public List<ChannelInputPerson> listInputPerson(String principal, String onchannel) {
+    public List<ChannelInputPerson> listInputPerson(String principal, String channel) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'} from tuple input.persons %s where {'tuple.onchannel':'%s'}", ChannelInputPerson.class.getName(), onchannel);
+        String cjql = String.format("select {'tuple':'*'} from tuple input.persons %s where {'tuple.channel':'%s'}", ChannelInputPerson.class.getName(), channel);
         IQuery<ChannelInputPerson> query = cube.createQuery(cjql);
         List<IDocument<ChannelInputPerson>> docs = query.getResultList();
         List<ChannelInputPerson> inputPersonList = new ArrayList<>();
@@ -141,9 +140,9 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
-    public boolean existsOutputPerson(String principal, String onchannel, String person) {
+    public boolean existsOutputPerson(String principal, String channel, String person) {
         ICube cube = cube(principal);
-        return cube.tupleCount("output.persons", String.format("{'tuple.onchannel':'%s','tuple.person':'%s'}", onchannel, person)) > 0;
+        return cube.tupleCount("output.persons", String.format("{'tuple.channel':'%s','tuple.person':'%s'}", channel, person)) > 0;
     }
 
     @Override
@@ -153,15 +152,15 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
-    public void removeOutputPerson(String principal, String onchannel, String person) {
+    public void removeOutputPerson(String principal, String channel, String person) {
         ICube cube = cube(principal);
-        cube.deleteDocOne("output.persons", String.format("{'tuple.onchannel':'%s','tuple.person':'%s'}", onchannel, person));
+        cube.deleteDocOne("output.persons", String.format("{'tuple.channel':'%s','tuple.person':'%s'}", channel, person));
     }
 
     @Override
-    public List<ChannelOutputPerson> pageOutputPerson(String principal, String onchannel, int limit, long offset) {
+    public List<ChannelOutputPerson> pageOutputPerson(String principal, String channel, int limit, long offset) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple output.persons %s where {'tuple.onchannel':'%s'}", limit, offset, ChannelOutputPerson.class.getName(), onchannel);
+        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple output.persons %s where {'tuple.channel':'%s'}", limit, offset, ChannelOutputPerson.class.getName(), channel);
         IQuery<ChannelOutputPerson> query = cube.createQuery(cjql);
         List<IDocument<ChannelOutputPerson>> docs = query.getResultList();
         List<ChannelOutputPerson> outputPersonList = new ArrayList<>();

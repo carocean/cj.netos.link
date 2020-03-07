@@ -21,23 +21,23 @@ public interface INetflowLinkService {
 
     Channel getChannel(String principal, String channel);
 
-    boolean existsInputPerson(String principal, String onchannel, String person, String channel);
+    boolean existsInputPerson(String principal, String channel, String person);
 
     void addInputPerson(String principal,ChannelInputPerson channelInputPerson);
 
-    void removeInputPerson(String principal, String onchannel, String person, String channel);
+    void removeInputPerson(String principal, String channel, String person);
 
-    List<ChannelInputPerson> pageInputPerson(String principal, String onchannel, int limit, long offset);
+    List<ChannelInputPerson> pageInputPerson(String principal, String channel, int limit, long offset);
 
-    List<ChannelInputPerson> listInputPerson(String principal, String onchannel);
+    List<ChannelInputPerson> listInputPerson(String principal, String channel);
 
-    boolean existsOutputPerson(String principal, String onchannel, String person);
+    boolean existsOutputPerson(String principal, String channel, String person);
 
     void addOutputPerson(String principal,ChannelOutputPerson outputPerson);
 
-    void removeOutputPerson(String principal, String onchannel, String person);
+    void removeOutputPerson(String principal, String channel, String person);
 
-    List<ChannelOutputPerson> pageOutputPerson(String principal, String onchannel, int limit, long offset);
+    List<ChannelOutputPerson> pageOutputPerson(String principal, String channel, int limit, long offset);
 
     void updateChannelLeading(String principal, String channel, String leading);
 

@@ -3,7 +3,6 @@ package cj.netos.link.entities;
 public class ChannelInputPerson {
     String person;
     String channel;
-    String onchannel;
     long atime;
 
     public String getPerson() {
@@ -12,14 +11,6 @@ public class ChannelInputPerson {
 
     public void setPerson(String person) {
         this.person = person;
-    }
-
-    public String getOnchannel() {
-        return onchannel;
-    }
-
-    public void setOnchannel(String onchannel) {
-        this.onchannel = onchannel;
     }
 
     public String getChannel() {

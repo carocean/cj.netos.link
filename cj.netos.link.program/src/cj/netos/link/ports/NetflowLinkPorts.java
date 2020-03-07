@@ -70,61 +70,57 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
-    public void addInputPerson(ISecuritySession securitySession, String onchannel, String person, String channel) throws CircuitException {
-        if (!netflowLinkService.existsChannel(securitySession.principal(), onchannel)) {
+    public void addInputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
+        if (!netflowLinkService.existsChannel(securitySession.principal(), channel)) {
             throw new CircuitException("404", "管道不存在");
-        }
-        if (netflowLinkService.existsInputPerson(securitySession.principal(), onchannel, person, channel)) {
-            throw new CircuitException("500", "公众的管道已加入输入端");
         }
         ChannelInputPerson channelInputPerson = new ChannelInputPerson();
         channelInputPerson.setAtime(System.currentTimeMillis());
         channelInputPerson.setChannel(channel);
-        channelInputPerson.setOnchannel(onchannel);
         channelInputPerson.setPerson(person);
         netflowLinkService.addInputPerson(securitySession.principal(), channelInputPerson);
     }
 
     @Override
-    public void removeInputPerson(ISecuritySession securitySession, String onchannel, String person, String channel) throws CircuitException {
-        netflowLinkService.removeInputPerson(securitySession.principal(), onchannel, person, channel);
+    public void removeInputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
+        netflowLinkService.removeInputPerson(securitySession.principal(), channel, person);
     }
 
     @Override
-    public List<ChannelInputPerson> pageInputPerson(ISecuritySession securitySession, String onchannel, int limit, long offset) throws CircuitException {
-        String owner = onchannel.substring(0, onchannel.indexOf("/"));
-        return netflowLinkService.pageInputPerson(owner, onchannel, limit, offset);
+    public List<ChannelInputPerson> pageInputPerson(ISecuritySession securitySession, String channel, int limit, long offset) throws CircuitException {
+        String owner = channel.substring(0, channel.indexOf("/"));
+        return netflowLinkService.pageInputPerson(owner, channel, limit, offset);
     }
 
     @Override
-    public List<ChannelInputPerson> listInputPerson(ISecuritySession securitySession, String onchannel, String person) throws CircuitException {
-        String owner = onchannel.substring(0, onchannel.indexOf("/"));
-        return netflowLinkService.listInputPerson(owner, onchannel);
+    public List<ChannelInputPerson> listInputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
+        String owner = channel.substring(0, channel.indexOf("/"));
+        return netflowLinkService.listInputPerson(owner, channel);
     }
 
     @Override
-    public void addOutputPerson(ISecuritySession securitySession, String onchannel, String person) throws CircuitException {
-        if (!netflowLinkService.existsChannel(securitySession.principal(), onchannel)) {
+    public void addOutputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
+        if (!netflowLinkService.existsChannel(securitySession.principal(), channel)) {
             throw new CircuitException("404", "管道不存在");
         }
-        if (netflowLinkService.existsOutputPerson(securitySession.principal(), onchannel, person)) {
+        if (netflowLinkService.existsOutputPerson(securitySession.principal(), channel, person)) {
             throw new CircuitException("500", "公众已在输出端");
         }
         ChannelOutputPerson outputPerson = new ChannelOutputPerson();
         outputPerson.setAtime(System.currentTimeMillis());
-        outputPerson.setOnchannel(onchannel);
+        outputPerson.setOnchannel(channel);
         outputPerson.setPerson(person);
         netflowLinkService.addOutputPerson(securitySession.principal(), outputPerson);
     }
 
     @Override
-    public void removeOutputPerson(ISecuritySession securitySession, String onchannel, String person) throws CircuitException {
-        netflowLinkService.removeOutputPerson(securitySession.principal(), onchannel, person);
+    public void removeOutputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
+        netflowLinkService.removeOutputPerson(securitySession.principal(), channel, person);
     }
 
     @Override
-    public List<ChannelOutputPerson> pageOutputPerson(ISecuritySession securitySession, String onchannel, int limit, long offset) throws CircuitException {
-        String owner = onchannel.substring(0, onchannel.indexOf("/"));
-        return netflowLinkService.pageOutputPerson(owner, onchannel, limit, offset);
+    public List<ChannelOutputPerson> pageOutputPerson(ISecuritySession securitySession, String channel, int limit, long offset) throws CircuitException {
+        String owner = channel.substring(0, channel.indexOf("/"));
+        return netflowLinkService.pageOutputPerson(owner, channel, limit, offset);
     }
 }

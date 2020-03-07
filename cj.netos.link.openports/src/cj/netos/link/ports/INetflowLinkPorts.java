@@ -75,23 +75,21 @@ public interface INetflowLinkPorts extends IOpenportService {
     @CjOpenport(usage = "加入公众到管道的输入端")
     void addInputPerson(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所在的管道号。", name = "onchannel") String onchannel,
-            @CjOpenportParameter(usage = "上游公众", name = "person") String person,
-            @CjOpenportParameter(usage = "上游管道。", name = "channel") String channel
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
+            @CjOpenportParameter(usage = "上游公众", name = "person") String person
     ) throws CircuitException;
 
     @CjOpenport(usage = "从输入中移除")
     void removeInputPerson(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所在的管道号。", name = "onchannel") String onchannel,
-            @CjOpenportParameter(usage = "上游公众", name = "person") String person,
-            @CjOpenportParameter(usage = "上游管道。", name = "channel") String channel
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
+            @CjOpenportParameter(usage = "上游公众", name = "person") String person
     ) throws CircuitException;
 
     @CjOpenport(usage = "分页输入公众")
     List<ChannelInputPerson> pageInputPerson(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所在的管道号。", name = "onchannel") String onchannel,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
             @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
             @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
     ) throws CircuitException;
@@ -99,28 +97,28 @@ public interface INetflowLinkPorts extends IOpenportService {
     @CjOpenport(usage = "列出所有输入公众")
     List<ChannelInputPerson> listInputPerson(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所在的管道号。", name = "onchannel") String onchannel,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
             @CjOpenportParameter(usage = "上游公众", name = "person") String person
     ) throws CircuitException;
 
     @CjOpenport(usage = "为管道添加输出公众")
     void addOutputPerson(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所在的管道号。", name = "onchannel") String onchannel,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
             @CjOpenportParameter(usage = "上游公众", name = "person") String person
     ) throws CircuitException;
 
     @CjOpenport(usage = "移除输出公众")
     void removeOutputPerson(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所在的管道号。", name = "onchannel") String onchannel,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
             @CjOpenportParameter(usage = "上游公众", name = "person") String person
     ) throws CircuitException;
 
     @CjOpenport(usage = "分页输出公众")
     List<ChannelOutputPerson> pageOutputPerson(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "所在的管道号。", name = "onchannel") String onchannel,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
             @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
             @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
     ) throws CircuitException;
