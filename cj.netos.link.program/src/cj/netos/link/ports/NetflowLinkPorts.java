@@ -108,7 +108,7 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
         }
         ChannelOutputPerson outputPerson = new ChannelOutputPerson();
         outputPerson.setAtime(System.currentTimeMillis());
-        outputPerson.setOnchannel(channel);
+        outputPerson.setChannel(channel);
         outputPerson.setPerson(person);
         netflowLinkService.addOutputPerson(securitySession.principal(), outputPerson);
     }
