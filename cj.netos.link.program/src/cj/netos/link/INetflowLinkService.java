@@ -21,7 +21,7 @@ public interface INetflowLinkService {
 
     List<Channel> pageChannel(String principal, int limit, long offset);
 
-    Channel getChannel(String principal, String channel);
+    Channel getMyChannel(String principal, String channel);
 
     boolean existsInputPerson(String principal, String channel, String person);
 
@@ -48,5 +48,7 @@ public interface INetflowLinkService {
     void addPerson(String principal, PersonInfo person);
 
     void removePerson(String principal, String person);
+
+    Channel getPersonChannel(String person, String channel);
 
 }

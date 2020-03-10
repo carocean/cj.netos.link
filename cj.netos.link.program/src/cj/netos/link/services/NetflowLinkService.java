@@ -22,7 +22,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     @Override
     public boolean existsChannel(String principal, String channel) {
         ICube cube = cube(principal);
-        return cube.tupleCount("channels", String.format("{'tuple.creator':'%s','tuple.channel':'%s'}", principal, channel)) > 0;
+        return cube.tupleCount("channels", String.format("{'tuple.channel':'%s'}", channel)) > 0;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     public void updateOutGeoSelector(String principal, String channel, String outGeoSelector) {
         ICube cube = cube(principal);
         cube.updateDocOne("channels",
-                Document.parse(String.format("{'tuple.channel':'%s','tuple.creator':'%s'}", channel, principal)),
+                Document.parse(String.format("{'tuple.channel':'%s'}", channel)),
                 Document.parse(String.format("{'$set':{'tuple.outGeoSelector':'%s'}}", outGeoSelector)));
     }
 
@@ -43,7 +43,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     public void updateOutPersonSelector(String principal, String channel, String outPersonSelector) {
         ICube cube = cube(principal);
         cube.updateDocOne("channels",
-                Document.parse(String.format("{'tuple.channel':'%s','tuple.creator':'%s'}", channel, principal)),
+                Document.parse(String.format("{'tuple.channel':'%s'}", channel)),
                 Document.parse(String.format("{'$set':{'tuple.outPersonSelector':'%s'}}", outPersonSelector)));
     }
 
@@ -51,7 +51,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     public void updateChannelLeading(String principal, String channel, String leading) {
         ICube cube = cube(principal);
         cube.updateDocOne("channels",
-                Document.parse(String.format("{'tuple.channel':'%s','tuple.creator':'%s'}", channel, principal)),
+                Document.parse(String.format("{'tuple.channel':'%s'}", channel)),
                 Document.parse(String.format("{'$set':{'tuple.leading':'%s'}}", leading)));
     }
 
@@ -59,20 +59,20 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     public void updateChanneTitle(String principal, String channel, String title) {
         ICube cube = cube(principal);
         cube.updateDocOne("channels",
-                Document.parse(String.format("{'tuple.channel':'%s','tuple.creator':'%s'}", channel, principal)),
+                Document.parse(String.format("{'tuple.channel':'%s'}", channel)),
                 Document.parse(String.format("{'$set':{'tuple.title':'%s'}}", title)));
     }
 
     @Override
     public void removeChannel(String principal, String channel) {
         ICube cube = cube(principal);
-        cube.deleteDocOne("channels", String.format("{'tuple.creator':'%s','tuple.channel':'%s'}", principal, channel));
+        cube.deleteDocOne("channels", String.format("{'tuple.channel':'%s'}", channel));
     }
 
     @Override
     public List<Channel> pageChannel(String principal, int limit, long offset) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple channels %s where {'tuple.creator':'%s'}", limit, offset, Channel.class.getName(), principal);
+        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple channels %s where {}", limit, offset, Channel.class.getName());
         IQuery<Channel> query = cube.createQuery(cjql);
         List<IDocument<Channel>> docs = query.getResultList();
         List<Channel> channels = new ArrayList<>();
@@ -84,9 +84,21 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
-    public Channel getChannel(String principal, String channel) {
+    public Channel getMyChannel(String principal, String channel) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple channels %s where {'tuple.creator':'%s','tuple.channel':'%s'}", Channel.class.getName(), principal, channel);
+        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple channels %s where {'tuple.channel':'%s'}", Channel.class.getName(), channel);
+        IQuery<Channel> query = cube.createQuery(cjql);
+        IDocument<Channel> doc = query.getSingleResult();
+        if (doc == null) {
+            return null;
+        }
+        return doc.tuple();
+    }
+
+    @Override
+    public Channel getPersonChannel(String person, String channel) {
+        ICube cube = cube(person);
+        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple channels %s where {'tuple.channel':'%s'}", Channel.class.getName(), channel);
         IQuery<Channel> query = cube.createQuery(cjql);
         IDocument<Channel> doc = query.getSingleResult();
         if (doc == null) {

@@ -69,9 +69,16 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
     ) throws CircuitException;
 
-    @CjOpenport(usage = "获取管道")
-    Channel getChannel(
+    @CjOpenport(usage = "获取我的管道")
+    Channel getMyChannel(
             ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "管道号。", name = "channel") String channel
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "获取公众管道")
+    Channel getPersonChannel(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "公众号。", name = "person") String person,
             @CjOpenportParameter(usage = "管道号。", name = "channel") String channel
     ) throws CircuitException;
 

@@ -11,7 +11,6 @@ import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.ISecuritySession;
 
 import java.util.List;
-import java.util.Map;
 
 @CjService(name = "/netflow/self.service")
 public class NetflowLinkPorts implements INetflowLinkPorts {
@@ -66,9 +65,13 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
-    public Channel getChannel(ISecuritySession securitySession, String channel) throws CircuitException {
-        String owner = channel.substring(0, channel.indexOf("/"));
-        return netflowLinkService.getChannel(owner, channel);
+    public Channel getMyChannel(ISecuritySession securitySession, String channel) throws CircuitException {
+        return netflowLinkService.getMyChannel(securitySession.principal(), channel);
+    }
+
+    @Override
+    public Channel getPersonChannel(ISecuritySession securitySession, String person, String channel) throws CircuitException {
+        return netflowLinkService.getPersonChannel(person, channel);
     }
 
     @Override
@@ -90,14 +93,12 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
 
     @Override
     public List<ChannelInputPerson> pageInputPerson(ISecuritySession securitySession, String channel, int limit, long offset) throws CircuitException {
-        String owner = channel.substring(0, channel.indexOf("/"));
-        return netflowLinkService.pageInputPerson(owner, channel, limit, offset);
+        return netflowLinkService.pageInputPerson(securitySession.principal(), channel, limit, offset);
     }
 
     @Override
     public List<ChannelInputPerson> listInputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
-        String owner = channel.substring(0, channel.indexOf("/"));
-        return netflowLinkService.listInputPerson(owner, channel);
+        return netflowLinkService.listInputPerson(securitySession.principal(), channel);
     }
 
     @Override
@@ -122,17 +123,16 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
 
     @Override
     public List<ChannelOutputPerson> pageOutputPerson(ISecuritySession securitySession, String channel, int limit, long offset) throws CircuitException {
-        String owner = channel.substring(0, channel.indexOf("/"));
-        return netflowLinkService.pageOutputPerson(owner, channel, limit, offset);
+        return netflowLinkService.pageOutputPerson(securitySession.principal(), channel, limit, offset);
     }
 
     @Override
     public void addPerson(ISecuritySession securitySession, PersonInfo person) throws CircuitException {
-        netflowLinkService.addPerson(securitySession.principal(),person);
+        netflowLinkService.addPerson(securitySession.principal(), person);
     }
 
     @Override
     public void removePerson(ISecuritySession securitySession, String person) throws CircuitException {
-        netflowLinkService.removePerson(securitySession.principal(),person);
+        netflowLinkService.removePerson(securitySession.principal(), person);
     }
 }
