@@ -13,7 +13,6 @@ import cj.studio.openport.annotations.CjOpenportParameter;
 import cj.studio.openport.annotations.CjOpenports;
 
 import java.util.List;
-import java.util.Map;
 
 @CjOpenports(usage = "网流个人自助服务")
 public interface INetflowLinkPorts extends IOpenportService {
@@ -73,6 +72,12 @@ public interface INetflowLinkPorts extends IOpenportService {
     Channel getMyChannel(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "管道号。", name = "channel") String channel
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "获取指定用户的所有管道")
+    List<Channel> listPersonChannels(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "公号。", name = "person") String person
     ) throws CircuitException;
 
     @CjOpenport(usage = "获取公众管道")

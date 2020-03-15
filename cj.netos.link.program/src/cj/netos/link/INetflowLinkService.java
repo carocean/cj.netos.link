@@ -51,4 +51,6 @@ public interface INetflowLinkService {
 
     Channel getPersonChannel(String person, String channel);
 
+    List<Channel> listPersonChannels(String person);
+
 }

@@ -75,6 +75,11 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
+    public List<Channel> listPersonChannels(ISecuritySession securitySession, String person) throws CircuitException {
+        return netflowLinkService.listPersonChannels(person);
+    }
+
+    @Override
     public void addInputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
         if (!netflowLinkService.existsChannel(securitySession.principal(), channel)) {
             throw new CircuitException("404", "管道不存在");

@@ -108,6 +108,19 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
+    public List<Channel> listPersonChannels(String person) {
+        ICube cube = cube(person);
+        String cjql = String.format("select {'tuple':'*'} from tuple channels %s where {}");
+        IQuery<Channel> query = cube.createQuery(cjql);
+        List<IDocument<Channel>> docs = query.getResultList();
+        List<Channel> list = new ArrayList<>();
+        for (IDocument<Channel> doc : docs) {
+            list.add(doc.tuple());
+        }
+        return list;
+    }
+
+    @Override
     public boolean existsInputPerson(String principal, String channel, String person) {
         ICube cube = cube(principal);
         return cube.tupleCount("input.persons", String.format("{'tuple.channel':'%s','tuple.person':'%s'}", channel, person)) > 0;
