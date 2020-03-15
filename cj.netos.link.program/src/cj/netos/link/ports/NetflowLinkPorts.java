@@ -127,8 +127,14 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
-    public List<ChannelOutputPerson> pageOutputPerson(ISecuritySession securitySession, String channel, int limit, long offset) throws CircuitException {
+    public List<PersonInfo> pageOutputPerson(ISecuritySession securitySession, String channel, int limit, long offset) throws CircuitException {
+
         return netflowLinkService.pageOutputPerson(securitySession.principal(), channel, limit, offset);
+    }
+
+    @Override
+    public List<PersonInfo> pageOutputPersonOf(ISecuritySession securitySession, String person, String channel, int limit, long offset) throws CircuitException {
+        return netflowLinkService.pageOutputPersonOf(person, channel, limit, offset);
     }
 
     @Override

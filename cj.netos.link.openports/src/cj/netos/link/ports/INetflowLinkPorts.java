@@ -2,7 +2,6 @@ package cj.netos.link.ports;
 
 import cj.netos.link.entities.Channel;
 import cj.netos.link.entities.ChannelInputPerson;
-import cj.netos.link.entities.ChannelOutputPerson;
 import cj.netos.link.entities.PersonInfo;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.IOpenportService;
@@ -131,8 +130,17 @@ public interface INetflowLinkPorts extends IOpenportService {
     ) throws CircuitException;
 
     @CjOpenport(usage = "分页输出公众")
-    List<ChannelOutputPerson> pageOutputPerson(
+    List<PersonInfo> pageOutputPerson(
             ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
+            @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
+            @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "分页输出公众")
+    List<PersonInfo> pageOutputPersonOf(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "公号。", name = "person") String person,
             @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
             @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
             @CjOpenportParameter(usage = "当前位置", name = "offset") long offset

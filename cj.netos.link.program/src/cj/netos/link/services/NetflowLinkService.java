@@ -11,11 +11,11 @@ import cj.netos.link.entities.ChannelInputPerson;
 import cj.netos.link.entities.ChannelOutputPerson;
 import cj.netos.link.entities.PersonInfo;
 import cj.studio.ecm.annotation.CjService;
+import cj.ultimate.gson2.com.google.gson.Gson;
 import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @CjService(name = "netflowLinkService")
 public class NetflowLinkService extends AbstractLinkService implements INetflowLinkService {
@@ -110,7 +110,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     @Override
     public List<Channel> listPersonChannels(String person) {
         ICube cube = cube(person);
-        String cjql = String.format("select {'tuple':'*'} from tuple channels %s where {}");
+        String cjql = String.format("select {'tuple':'*'} from tuple channels %s where {}", Channel.class.getName());
         IQuery<Channel> query = cube.createQuery(cjql);
         List<IDocument<Channel>> docs = query.getResultList();
         List<Channel> list = new ArrayList<>();
@@ -185,17 +185,43 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
-    public List<ChannelOutputPerson> pageOutputPerson(String principal, String channel, int limit, long offset) {
-        ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple output.persons %s where {'tuple.channel':'%s'}", limit, offset, ChannelOutputPerson.class.getName(), channel);
+    public List<PersonInfo> pageOutputPerson(String principal, String channel, int limit, long offset) {
+        return pageOutputPersonOf(principal, channel, limit, offset);
+    }
+
+    @Override
+    public List<PersonInfo> pageOutputPersonOf(String person, String channel, int limit, long offset) {
+        ICube cube = cube(person);
+        Channel ch = getPersonChannel(person, channel);
+        String cjql = String.format("select {'tuple':'*'} from tuple output.persons %s where {'tuple.channel':'%s'}", ChannelOutputPerson.class.getName(), channel);
         IQuery<ChannelOutputPerson> query = cube.createQuery(cjql);
         List<IDocument<ChannelOutputPerson>> docs = query.getResultList();
-        List<ChannelOutputPerson> outputPersonList = new ArrayList<>();
+
+        List<String> officials = new ArrayList<>();
         for (IDocument<ChannelOutputPerson> doc : docs) {
-            outputPersonList.add(doc.tuple()
-            );
+            officials.add(doc.tuple().getPerson());
         }
-        return outputPersonList;
+        String json = new Gson().toJson(officials);
+        String outPersonSelector = ch.getOutPersonSelector();
+        if ("only_select".equals(outPersonSelector)) {
+            cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple persons %s where {'tuple.official':{'$in':%s}}", limit, offset, PersonInfo.class.getName(),  json);
+            IQuery<PersonInfo> q = cube.createQuery(cjql);
+            List<IDocument<PersonInfo>> _docs = q.getResultList();
+            List<PersonInfo> persons = new ArrayList<>();
+            for (IDocument<PersonInfo> doc : _docs) {
+                persons.add(doc.tuple());
+            }
+            return persons;
+        }
+        //下面是all_except
+        cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple persons %s where {'tuple.official':{'$nin':%s}}", limit, offset, PersonInfo.class.getName(),  json);
+        IQuery<PersonInfo> q = cube.createQuery(cjql);
+        List<IDocument<PersonInfo>> _docs = q.getResultList();
+        List<PersonInfo> persons = new ArrayList<>();
+        for (IDocument<PersonInfo> doc : _docs) {
+            persons.add(doc.tuple());
+        }
+        return persons;
     }
 
     @Override

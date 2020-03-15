@@ -6,7 +6,6 @@ import cj.netos.link.entities.ChannelOutputPerson;
 import cj.netos.link.entities.PersonInfo;
 
 import java.util.List;
-import java.util.Map;
 
 public interface INetflowLinkService {
     boolean existsChannel(String principal, String channel);
@@ -39,7 +38,7 @@ public interface INetflowLinkService {
 
     void removeOutputPerson(String principal, String channel, String person);
 
-    List<ChannelOutputPerson> pageOutputPerson(String principal, String channel, int limit, long offset);
+    List<PersonInfo> pageOutputPerson(String principal, String channel, int limit, long offset);
 
     void updateChannelLeading(String principal, String channel, String leading);
 
@@ -52,5 +51,7 @@ public interface INetflowLinkService {
     Channel getPersonChannel(String person, String channel);
 
     List<Channel> listPersonChannels(String person);
+
+    List<PersonInfo> pageOutputPersonOf(String person, String channel, int limit, long offset);
 
 }
