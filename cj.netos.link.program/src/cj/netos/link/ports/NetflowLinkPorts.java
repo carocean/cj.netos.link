@@ -5,6 +5,7 @@ import cj.netos.link.entities.Channel;
 import cj.netos.link.entities.ChannelInputPerson;
 import cj.netos.link.entities.ChannelOutputPerson;
 import cj.netos.link.entities.PersonInfo;
+import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
 import cj.studio.ecm.net.CircuitException;
@@ -20,7 +21,8 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     @Override
     public void createChannel(ISecuritySession securitySession, String channel, String title, String leading, String outPersonSelector, String outGeoSelector) throws CircuitException {
         if (netflowLinkService.existsChannel(securitySession.principal(), channel)) {
-            throw new CircuitException("500", "已存在管道");
+            CJSystem.logging().warn(getClass(),String.format("用户<%s>已存在管道:%s",securitySession.principal(),channel));
+            return;
         }
         Channel ch = new Channel();
         ch.setChannel(channel);
@@ -84,6 +86,10 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
         if (!netflowLinkService.existsChannel(securitySession.principal(), channel)) {
             throw new CircuitException("404", "管道不存在");
         }
+        if (netflowLinkService.existsInputPerson(securitySession.principal(), channel, person)) {
+            CJSystem.logging().warn(getClass(),String.format("用户<%s>的管道<%s>的输入端已有公众<%s>",securitySession.principal(),channel,person));
+            return;
+        }
         ChannelInputPerson channelInputPerson = new ChannelInputPerson();
         channelInputPerson.setAtime(System.currentTimeMillis());
         channelInputPerson.setChannel(channel);
@@ -112,7 +118,8 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
             throw new CircuitException("404", "管道不存在");
         }
         if (netflowLinkService.existsOutputPerson(securitySession.principal(), channel, person)) {
-            throw new CircuitException("500", "公众已在输出端");
+            CJSystem.logging().warn(getClass(),String.format("用户<%s>的管道<%s>的输出端已有公众<%s>",securitySession.principal(),channel,person));
+            return;
         }
         ChannelOutputPerson outputPerson = new ChannelOutputPerson();
         outputPerson.setAtime(System.currentTimeMillis());
@@ -128,7 +135,6 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
 
     @Override
     public List<PersonInfo> pageOutputPerson(ISecuritySession securitySession, String channel, int limit, long offset) throws CircuitException {
-
         return netflowLinkService.pageOutputPerson(securitySession.principal(), channel, limit, offset);
     }
 
@@ -140,6 +146,7 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     @Override
     public void addPerson(ISecuritySession securitySession, PersonInfo person) throws CircuitException {
         if (netflowLinkService.existsPerson(securitySession.principal(), person.getOfficial())) {
+            CJSystem.logging().warn(getClass(),String.format("用户<%s>已存在公众:%s",securitySession.principal(),person));
             return;
         }
         netflowLinkService.addPerson(securitySession.principal(), person);
