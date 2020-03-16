@@ -204,7 +204,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
         String json = new Gson().toJson(officials);
         String outPersonSelector = ch.getOutPersonSelector();
         if ("only_select".equals(outPersonSelector)) {
-            cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple persons %s where {'tuple.official':{'$in':%s}}", limit, offset, PersonInfo.class.getName(),  json);
+            cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple persons %s where {'tuple.official':{'$in':%s}}", limit, offset, PersonInfo.class.getName(), json);
             IQuery<PersonInfo> q = cube.createQuery(cjql);
             List<IDocument<PersonInfo>> _docs = q.getResultList();
             List<PersonInfo> persons = new ArrayList<>();
@@ -214,7 +214,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
             return persons;
         }
         //下面是all_except
-        cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple persons %s where {'tuple.official':{'$nin':%s}}", limit, offset, PersonInfo.class.getName(),  json);
+        cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple persons %s where {'tuple.official':{'$nin':%s}}", limit, offset, PersonInfo.class.getName(), json);
         IQuery<PersonInfo> q = cube.createQuery(cjql);
         List<IDocument<PersonInfo>> _docs = q.getResultList();
         List<PersonInfo> persons = new ArrayList<>();
@@ -222,6 +222,11 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
             persons.add(doc.tuple());
         }
         return persons;
+    }
+    @Override
+    public boolean existsPerson(String principal, String person) {
+        ICube cube = cube(principal);
+        return cube.tupleCount("persons", String.format("{'tuple.official':'%s'}", person)) > 0;
     }
 
     @Override

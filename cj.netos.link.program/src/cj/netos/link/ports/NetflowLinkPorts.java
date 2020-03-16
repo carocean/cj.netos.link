@@ -139,6 +139,9 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
 
     @Override
     public void addPerson(ISecuritySession securitySession, PersonInfo person) throws CircuitException {
+        if (netflowLinkService.existsPerson(securitySession.principal(), person.getOfficial())) {
+            return;
+        }
         netflowLinkService.addPerson(securitySession.principal(), person);
     }
 

@@ -44,6 +44,8 @@ public interface INetflowLinkService {
 
     void updateChanneTitle(String principal, String channel, String title);
 
+    boolean existsPerson(String principal, String person);
+
     void addPerson(String principal, PersonInfo person);
 
     void removePerson(String principal, String person);
