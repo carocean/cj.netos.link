@@ -84,7 +84,8 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     @Override
     public void addInputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
         if (!netflowLinkService.existsChannel(securitySession.principal(), channel)) {
-            throw new CircuitException("404", "管道不存在");
+            CJSystem.logging().warn(getClass(),String.format("用户<%s>不存在管道<%s>",securitySession.principal(),channel));
+            return;
         }
         if (netflowLinkService.existsInputPerson(securitySession.principal(), channel, person)) {
             CJSystem.logging().warn(getClass(),String.format("用户<%s>的管道<%s>的输入端已有公众<%s>",securitySession.principal(),channel,person));
@@ -115,7 +116,8 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     @Override
     public void addOutputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
         if (!netflowLinkService.existsChannel(securitySession.principal(), channel)) {
-            throw new CircuitException("404", "管道不存在");
+            CJSystem.logging().warn(getClass(),String.format("用户<%s>不存在管道<%s>",securitySession.principal(),channel));
+            return;
         }
         if (netflowLinkService.existsOutputPerson(securitySession.principal(), channel, person)) {
             CJSystem.logging().warn(getClass(),String.format("用户<%s>的管道<%s>的输出端已有公众<%s>",securitySession.principal(),channel,person));
