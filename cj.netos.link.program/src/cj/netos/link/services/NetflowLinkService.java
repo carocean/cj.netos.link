@@ -193,6 +193,9 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     public List<PersonInfo> pageOutputPersonOf(String person, String channel, int limit, long offset) {
         ICube cube = cube(person);
         Channel ch = getPersonChannel(person, channel);
+        if (ch == null) {
+            return new ArrayList<>();
+        }
         String cjql = String.format("select {'tuple':'*'} from tuple output.persons %s where {'tuple.channel':'%s'}", ChannelOutputPerson.class.getName(), channel);
         IQuery<ChannelOutputPerson> query = cube.createQuery(cjql);
         List<IDocument<ChannelOutputPerson>> docs = query.getResultList();
