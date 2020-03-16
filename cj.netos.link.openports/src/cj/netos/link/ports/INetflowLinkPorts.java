@@ -19,7 +19,6 @@ public interface INetflowLinkPorts extends IOpenportService {
     void createChannel(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "管道号", name = "channel") String channel,
-            @CjOpenportParameter(usage = "来源管道，它如果与id相等表示该管道就是源头管道。别人依据它创建的管道需要将本管道的id赋给创建的管道的origin", name = "origin") String origin,
             @CjOpenportParameter(usage = "管道显示名", name = "title") String title,
             @CjOpenportParameter(usage = "管道图标", name = "leading") String leading,
             @CjOpenportParameter(usage = "公众选择策略：only_select, all_except,", name = "outPersonSelector", defaultValue = "only_select") String outPersonSelector,

@@ -18,13 +18,13 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     INetflowLinkService netflowLinkService;
 
     @Override
-    public void createChannel(ISecuritySession securitySession, String channel, String origin, String title, String leading, String outPersonSelector, String outGeoSelector) throws CircuitException {
-        if (netflowLinkService.existsChannel(securitySession.principal(), origin)) {
+    public void createChannel(ISecuritySession securitySession, String channel, String title, String leading, String outPersonSelector, String outGeoSelector) throws CircuitException {
+        if (netflowLinkService.existsChannel(securitySession.principal(), channel)) {
             throw new CircuitException("500", "已存在管道");
         }
         Channel ch = new Channel();
         ch.setChannel(channel);
-        ch.setOrigin(origin);
+        ch.setInPersonSelector("only_select");
         ch.setCreator(securitySession.principal());
         ch.setCtime(System.currentTimeMillis());
         ch.setLeading(leading);
