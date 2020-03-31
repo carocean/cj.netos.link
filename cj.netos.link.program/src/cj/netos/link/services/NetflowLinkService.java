@@ -226,6 +226,34 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
         }
         return persons;
     }
+
+    @Override
+    public List<PersonInfo> pageInputPersonOf(String person, String channel, int limit, long offset) {
+        ICube cube = cube(person);
+        Channel ch = getPersonChannel(person, channel);
+        if (ch == null) {
+            return new ArrayList<>();
+        }
+        String cjql = String.format("select {'tuple':'*'} from tuple input.persons %s where {'tuple.channel':'%s'}", ChannelOutputPerson.class.getName(), channel);
+        IQuery<ChannelOutputPerson> query = cube.createQuery(cjql);
+        List<IDocument<ChannelOutputPerson>> docs = query.getResultList();
+
+        List<String> officials = new ArrayList<>();
+        for (IDocument<ChannelOutputPerson> doc : docs) {
+            officials.add(doc.tuple().getPerson());
+        }
+        String json = new Gson().toJson(officials);
+
+        cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple persons %s where {'tuple.official':{'$in':%s}}", limit, offset, PersonInfo.class.getName(), json);
+        IQuery<PersonInfo> q = cube.createQuery(cjql);
+        List<IDocument<PersonInfo>> _docs = q.getResultList();
+        List<PersonInfo> persons = new ArrayList<>();
+        for (IDocument<PersonInfo> doc : _docs) {
+            persons.add(doc.tuple());
+        }
+        return persons;
+    }
+
     @Override
     public boolean existsPerson(String principal, String person) {
         ICube cube = cube(principal);

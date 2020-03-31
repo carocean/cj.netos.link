@@ -146,6 +146,11 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
+    public List<PersonInfo> pageInputPersonOf(ISecuritySession securitySession, String person, String channel, int limit, long offset) throws CircuitException {
+        return netflowLinkService.pageInputPersonOf(person, channel, limit, offset);
+    }
+
+    @Override
     public void addPerson(ISecuritySession securitySession, PersonInfo person) throws CircuitException {
         if (netflowLinkService.existsPerson(securitySession.principal(), person.getOfficial())) {
             CJSystem.logging().warn(getClass(),String.format("用户<%s>已存在公众:%s",securitySession.principal(),person));

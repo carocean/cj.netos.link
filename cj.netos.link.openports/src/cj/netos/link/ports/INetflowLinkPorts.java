@@ -136,8 +136,17 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
     ) throws CircuitException;
 
-    @CjOpenport(usage = "分页输出公众")
+    @CjOpenport(usage = "分页管道的上游公众")
     List<PersonInfo> pageOutputPersonOf(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "公号。", name = "person") String person,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
+            @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
+            @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "分页管道的下游公众")
+    List<PersonInfo> pageInputPersonOf(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "公号。", name = "person") String person,
             @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,

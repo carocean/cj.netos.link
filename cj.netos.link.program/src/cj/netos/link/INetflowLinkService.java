@@ -56,4 +56,6 @@ public interface INetflowLinkService {
 
     List<PersonInfo> pageOutputPersonOf(String person, String channel, int limit, long offset);
 
+    List<PersonInfo> pageInputPersonOf(String person, String channel, int limit, long offset);
+
 }
