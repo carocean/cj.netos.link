@@ -85,18 +85,18 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         return categories;
     }
 
-    public GeoReceptor getMyMobileReceptor(String person) {
-        String cjql = "select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)'}";
-        IQuery<GeoReceptor> query = home.createQuery(cjql);
-        query.setParameter("colname", _getReceptorColName("mobiles"));
-        query.setParameter("clazz", GeoReceptor.class.getName());
-        query.setParameter("creator", person);
-        IDocument<GeoReceptor> doc = query.getSingleResult();
-        if (doc == null) {
-            return null;
-        }
-        return doc.tuple();
-    }
+//    public GeoReceptor getMyMobileReceptor(String person) {
+//        String cjql = "select {'tuple':'*'}.limit(1) from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)'}";
+//        IQuery<GeoReceptor> query = home.createQuery(cjql);
+//        query.setParameter("colname", _getReceptorColName("mobiles"));
+//        query.setParameter("clazz", GeoReceptor.class.getName());
+//        query.setParameter("creator", person);
+//        IDocument<GeoReceptor> doc = query.getSingleResult();
+//        if (doc == null) {
+//            return null;
+//        }
+//        return doc.tuple();
+//    }
 
     @Override
     public List<GeoPOI> searchAroundReceptors(String person, GeoReceptor geoReceptor, String geoType, long limit, long skip) {
@@ -106,9 +106,8 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         } else {
             categories = findCategories(geoType);
         }
-        GeoReceptor myReceptor = getMyMobileReceptor(person);
-        LatLng latLng = myReceptor.getLocation();
-        double radius = myReceptor.getRadius();
+        LatLng latLng = geoReceptor.getLocation();
+        double radius = geoReceptor.getRadius();
         List<GeoPOI> list = new ArrayList<>();
         for (GeoCategory category : categories) {
             List<GeoPOI> pois = _searchPoiInCategory(latLng, radius, category, limit, skip);
@@ -161,9 +160,8 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         } else {
             categories = findCategories(geoType);
         }
-        GeoReceptor myReceptor = getMyMobileReceptor(person);
-        LatLng latLng = myReceptor.getLocation();
-        double radius = myReceptor.getRadius();
+        LatLng latLng = geoReceptor.getLocation();
+        double radius = geoReceptor.getRadius();
         List<GeoPOD> list = new ArrayList<>();
         for (GeoCategory category : categories) {
             List<GeoPOD> pods = _searchPoDInCategory(latLng, radius, category, limit, skip);
@@ -240,9 +238,8 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
             ids.add(doc.tuple().getPerson());
             follows.put(doc.tuple().getPerson(), doc.tuple());
         }
-        GeoReceptor myReceptor = getMyMobileReceptor(person);
-        LatLng latLng = myReceptor.getLocation();
-        double radius = myReceptor.getRadius();
+        LatLng latLng = geoReceptor.getLocation();
+        double radius = geoReceptor.getRadius();
         //查询这些用户的mobiles分类下的感知器，并以此作为远近距离排序
         //distanceField:"distance" 距离字段别称
         //"distanceMultiplier": 0.001,

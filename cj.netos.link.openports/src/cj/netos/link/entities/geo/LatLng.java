@@ -18,4 +18,12 @@ public class LatLng {
     public List<Double> toCoordinate() {
         return Arrays.asList(this.longitude, this.latitude);
     }
+
+    public double latitude() {
+        return latitude;
+    }
+
+    public double longitude() {
+        return longitude;
+    }
 }
