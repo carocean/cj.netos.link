@@ -21,7 +21,7 @@ public interface IChatroomService {
 
     void removeMember(String principal,String room, String person);
 
-    List<RoomMember> pageAnyRoomMember(String principal,String room, int limit, long offset);
+    List<RoomMember> pageRoomMember(String principal, String room, int limit, long offset);
 
     List<RoomMember> getActorRoomMembers(String principal,String room, String actor);
 
@@ -38,6 +38,10 @@ public interface IChatroomService {
     void updateLeading(String principal, String room, String leading);
 
     void updateTitle(String principal, String room, String title);
+
+    long countMember(String creator, String room);
+
+    void emptyMember(String creator, String room);
 
 }
 
