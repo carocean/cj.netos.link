@@ -53,6 +53,11 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
+    public Chatroom getRoomOfPerson(ISecuritySession securitySession, String room, String person) throws CircuitException {
+        return chatroomService.getRoom(person, room);
+    }
+
+    @Override
     public List<Chatroom> pageRoom(ISecuritySession securitySession, String room, int limit, long offset) throws CircuitException {
         return chatroomService.pageRoom(securitySession.principal(), limit, offset);
     }
@@ -92,6 +97,11 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
             return new ArrayList<>();
         }
         return chatroomService.pageRoomMember(chatroom.getCreator(), room, limit, offset);
+    }
+
+    @Override
+    public List<RoomMember> pageRoomMembersOfPerson(ISecuritySession securitySession, String room, String creator, int limit, long offset) throws CircuitException {
+        return chatroomService.pageRoomMember(creator, room, limit, offset);
     }
 
     @Override

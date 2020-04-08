@@ -32,6 +32,11 @@ public interface IChatroomLinkPorts extends IOpenportService {
     Chatroom getRoom(ISecuritySession securitySession,
                      @CjOpenportParameter(usage = "聊天室标识", name = "room") String room) throws CircuitException;
 
+    @CjOpenport(usage = "获取指定用户创建的聊天室信息")
+    Chatroom getRoomOfPerson(ISecuritySession securitySession,
+                             @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                             @CjOpenportParameter(usage = "公众号", name = "person") String person
+    ) throws CircuitException;
 
     @CjOpenport(usage = "分页聊天室")
     List<Chatroom> pageRoom(ISecuritySession securitySession,
@@ -64,6 +69,14 @@ public interface IChatroomLinkPorts extends IOpenportService {
     List<RoomMember> getActorRoomMembers(ISecuritySession securitySession,
                                          @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
                                          @CjOpenportParameter(usage = "成员扮演的角色，有：创建者(creator)管理员(admin)，客服(servicer)，普通成员(user)", name = "actor") String actor) throws CircuitException;
+
+    @CjOpenport(usage = "分页查询成员")
+    List<RoomMember> pageRoomMembersOfPerson(ISecuritySession securitySession,
+                                             @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                                             @CjOpenportParameter(usage = "聊天室创建者", name = "creator") String creator,
+                                             @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
+                                             @CjOpenportParameter(usage = "当前偏移", name = "offset") long offset
+    ) throws CircuitException;
 
 
     @CjOpenport(usage = "更新成员在聊天室中的昵称")
