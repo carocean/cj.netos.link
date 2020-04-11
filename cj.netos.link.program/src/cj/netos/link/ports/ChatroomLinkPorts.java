@@ -73,7 +73,6 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         }
         RoomMember member = new RoomMember();
         member.setActor(actor);
-        member.setOwner(chatroom.getCreator());
         member.setAtime(System.currentTimeMillis());
         member.setNickName(null);
         member.setPerson(person);

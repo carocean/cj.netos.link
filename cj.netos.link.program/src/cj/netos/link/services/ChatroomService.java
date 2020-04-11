@@ -43,7 +43,6 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
 
         RoomMember member = new RoomMember();
         member.setActor("creator");
-        member.setOwner(chatroom.getCreator());
         member.setAtime(System.currentTimeMillis());
         member.setNickName(null);
         member.setPerson(chatroom.getCreator());
