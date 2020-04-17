@@ -7,7 +7,11 @@
 				parameters:{
 					remotes:"[
 					'172.31.210.92:27017'
-				]"
+				]",
+					isTrustConnect: "false",
+					database: "admin",
+					user: 'superadmin',
+					password: '!jofers0408'
 				}
 			}
 		],
