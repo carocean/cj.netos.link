@@ -6,6 +6,7 @@ public class Chatroom {
     String creator;
     String leading;
     String microsite;
+    String background;
     long ctime;
     public String getMicrosite() {
         return microsite;
@@ -13,6 +14,14 @@ public class Chatroom {
 
     public void setMicrosite(String microsite) {
         this.microsite = microsite;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     public String getRoom() {

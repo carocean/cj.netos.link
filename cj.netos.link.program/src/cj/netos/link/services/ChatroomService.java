@@ -88,6 +88,18 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     }
 
     @Override
+    public RoomMember getRoomMember(Chatroom chatroom, String principal) {
+        ICube cube = cube(chatroom.getCreator());
+        String cjql = String.format("select {'tuple':'*'}.limit(1) from tuple chat.members %s where {'tuple.room':'%s','tuple.person':'%s'}  ", RoomMember.class.getName(), chatroom.getRoom(), principal);
+        IQuery<RoomMember> query = cube.createQuery(cjql);
+        IDocument<RoomMember> document = query.getSingleResult();
+        if (document == null) {
+            return null;
+        }
+        return document.tuple();
+    }
+
+    @Override
     public boolean existsMember(String principal, String room, String person) {
         ICube cube = cube(principal);
         return cube.tupleCount("chat.members", String.format("{'tuple.person':'%s','tuple.room':'%s'}", person, room)) > 0;
@@ -128,11 +140,19 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     }
 
     @Override
-    public void updateNickName(String principal, String room, String person, String nickName) {
-        ICube cube = cube(principal);
+    public void updateNickName(String creator, String room, String person, String nickName) {
+        ICube cube = cube(creator);
         cube.updateDocOne("chat.members",
                 Document.parse(String.format("{'tuple.room':'%s','tuple.person':'%s'}", room, person)),
                 Document.parse(String.format("{'$set':{'tuple.nickName':'%s'}}", nickName)));
+    }
+
+    @Override
+    public void setShowNick(Chatroom chatroom, String member, boolean isShowNick) {
+        ICube cube = cube(chatroom.getCreator());
+        cube.updateDocOne("chat.members",
+                Document.parse(String.format("{'tuple.room':'%s','tuple.person':'%s'}", chatroom.getRoom(), member)),
+                Document.parse(String.format("{'$set':{'tuple.isShowNick':%s}}", isShowNick)));
     }
 
     @Override
@@ -149,6 +169,14 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
         cube.updateDocOne("chat.rooms",
                 Document.parse(String.format("{'tuple.room':'%s'}", room)),
                 Document.parse(String.format("{'$set':{'tuple.title':'%s'}}", title)));
+    }
+
+    @Override
+    public void updateBackground(String creator, String room, String background) {
+        ICube cube = cube(creator);
+        cube.updateDocOne("chat.rooms",
+                Document.parse(String.format("{'tuple.room':'%s'}", room)),
+                Document.parse(String.format("{'$set':{'tuple.background':'%s'}}", background)));
     }
 
     @Override

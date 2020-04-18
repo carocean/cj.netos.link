@@ -5,7 +5,16 @@ public class RoomMember {
     String person;
     String actor;//创建者(creator)管理员(admin)，客服(servicer)，普通成员(user)
     String nickName;
+    boolean isShowNick;
     long atime;//加入时间
+
+    public boolean isShowNick() {
+        return isShowNick;
+    }
+
+    public void setShowNick(boolean showNick) {
+        isShowNick = showNick;
+    }
 
     public String getNickName() {
         return nickName;

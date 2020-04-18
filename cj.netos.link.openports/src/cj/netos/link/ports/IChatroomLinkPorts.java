@@ -64,6 +64,20 @@ public interface IChatroomLinkPorts extends IOpenportService {
                                     @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
                                     @CjOpenportParameter(usage = "当前偏移", name = "offset") long offset) throws CircuitException;
 
+    @CjOpenport(usage = "获取访问者在聊天室的成员属性")
+    RoomMember getRoomMember(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+            @CjOpenportParameter(usage = "聊天室创建者", name = "creator") String creator
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "获取指定用户在聊天室的成员属性")
+    RoomMember getHisRoomMember(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+            @CjOpenportParameter(usage = "聊天室创建者", name = "creator") String creator,
+            @CjOpenportParameter(usage = "成员", name = "person") String person
+    ) throws CircuitException;
 
     @CjOpenport(usage = "分页查询指定角色的成员")
     List<RoomMember> getActorRoomMembers(ISecuritySession securitySession,
@@ -79,11 +93,18 @@ public interface IChatroomLinkPorts extends IOpenportService {
     ) throws CircuitException;
 
 
-    @CjOpenport(usage = "更新成员在聊天室中的昵称")
+    @CjOpenport(usage = "更新我在聊天室中的昵称")
     void updateNickName(ISecuritySession securitySession,
                         @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
-                        @CjOpenportParameter(usage = "成员名", name = "person") String person,
+                        @CjOpenportParameter(usage = "聊天室创建者", name = "creator") String creator,
                         @CjOpenportParameter(usage = "成员在聊天室中的昵称", name = "nickName") String nickName) throws CircuitException;
+
+
+    @CjOpenport(usage = "设置是否显示为昵称")
+    void setShowNick(ISecuritySession securitySession,
+                     @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                     @CjOpenportParameter(usage = "聊天室创建者", name = "creator") String creator,
+                     @CjOpenportParameter(usage = "是否显示在群中的昵称", name = "isShowNick") boolean isShowNick) throws CircuitException;
 
 
     @CjOpenport(usage = "更新聊天室图标")
@@ -95,6 +116,11 @@ public interface IChatroomLinkPorts extends IOpenportService {
     void updateTitle(ISecuritySession securitySession,
                      @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
                      @CjOpenportParameter(usage = "聊天室显示名", name = "title") String title) throws CircuitException;
+
+    @CjOpenport(usage = "更新聊天室(必须是访问者创建的）背景")
+    void updateBackground(ISecuritySession securitySession,
+                     @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                     @CjOpenportParameter(usage = "背景url", name = "background") String background) throws CircuitException;
 
     @CjOpenport(usage = "发布公告", command = "post")
     void publishNotice(ISecuritySession securitySession,

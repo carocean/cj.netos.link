@@ -25,7 +25,7 @@ public interface IChatroomService {
 
     List<RoomMember> getActorRoomMembers(String principal,String room, String actor);
 
-    void updateNickName(String principal,String room, String person, String nickName);
+    void updateNickName(String creator,String room, String person, String nickName);
 
     void addNotice(String principal,RoomNotice roomNotice);
 
@@ -42,6 +42,12 @@ public interface IChatroomService {
     long countMember(String creator, String room);
 
     void emptyMember(String creator, String room);
+
+    RoomMember getRoomMember(Chatroom chatroom, String principal);
+
+    void setShowNick(Chatroom chatroom, String member, boolean isShowNick);
+
+    void updateBackground(String creator, String room, String background);
 
 }
 

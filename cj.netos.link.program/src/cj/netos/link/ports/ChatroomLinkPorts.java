@@ -38,8 +38,8 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (chatroom == null) {
             return;
         }
-        if (chatroom.getCreator() .equals(securitySession.principal())) {
-            chatroomService.emptyMember(chatroom.getCreator(),room);
+        if (chatroom.getCreator().equals(securitySession.principal())) {
+            chatroomService.emptyMember(chatroom.getCreator(), room);
         } else {
             //不是创建者说明是我加入的群，则将我从成员中移除
             chatroomService.removeMember(chatroom.getCreator(), room, securitySession.principal());
@@ -66,7 +66,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     public void addMember(ISecuritySession securitySession, String room, String person, String actor) throws CircuitException {
         Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
         if (chatroom == null) {
-            throw new CircuitException("500", String.format("不存在聊天室。%s %s",securitySession.principal(),room));
+            throw new CircuitException("500", String.format("不存在聊天室。%s %s", securitySession.principal(), room));
         }
         if (chatroomService.existsMember(chatroom.getCreator(), room, person)) {
             throw new CircuitException("500", "成员已在聊天室。");
@@ -113,19 +113,55 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
-    public void updateNickName(ISecuritySession securitySession, String room, String person, String nickName) throws CircuitException {
+    public RoomMember getRoomMember(ISecuritySession securitySession, String room, String creator) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(creator, room);
+        if (chatroom == null) {
+            throw new CircuitException("404", "聊天室不存在");
+        }
+        return chatroomService.getRoomMember(chatroom, securitySession.principal());
+    }
+
+    @Override
+    public RoomMember getHisRoomMember(ISecuritySession securitySession, String room, String creator, String person) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(creator, room);
+        if (chatroom == null) {
+            throw new CircuitException("404", "聊天室不存在");
+        }
+        return chatroomService.getRoomMember(chatroom, person);
+    }
+
+    @Override
+    public void updateNickName(ISecuritySession securitySession, String room, String creator, String nickName) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(creator, room);
+        if (chatroom == null) {
+            throw new CircuitException("404", "聊天室不存在");
+        }
+        chatroomService.updateNickName(chatroom.getCreator(), room, securitySession.principal(), nickName);
+    }
+
+    @Override
+    public void updateBackground(ISecuritySession securitySession, String room, String background) throws CircuitException {
         Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
         if (chatroom == null) {
-            return ;
+            throw new CircuitException("404", "聊天室不存在");
         }
-        chatroomService.updateNickName(chatroom.getCreator(), room, person, nickName);
+        chatroomService.updateBackground(chatroom.getCreator(), room,  background);
+    }
+
+    @Override
+    public void setShowNick(ISecuritySession securitySession, String room, String creator, boolean isShowNick) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(creator, room);
+        if (chatroom == null) {
+            throw new CircuitException("404", "聊天室不存在");
+        }
+        chatroomService.setShowNick(chatroom, securitySession.principal(), isShowNick);
     }
 
     @Override
     public void updateLeading(ISecuritySession securitySession, String room, String leading) throws CircuitException {
         Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
         if (chatroom == null) {
-            return ;
+            throw new CircuitException("404", "聊天室不存在");
         }
         chatroomService.updateLeading(chatroom.getCreator(), room, leading);
     }
@@ -134,7 +170,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     public void updateTitle(ISecuritySession securitySession, String room, String title) throws CircuitException {
         Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
         if (chatroom == null) {
-            return ;
+            throw new CircuitException("404", "聊天室不存在");
         }
         chatroomService.updateTitle(chatroom.getCreator(), room, title);
     }
