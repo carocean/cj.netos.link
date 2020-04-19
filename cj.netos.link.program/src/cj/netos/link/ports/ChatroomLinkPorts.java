@@ -207,8 +207,26 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
+    public RoomNotice getNewestNoticeOf(ISecuritySession securitySession, String creator, String room) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(creator, room);
+        if (chatroom == null) {
+            throw new CircuitException("404", "聊天室不存在");
+        }
+        return chatroomService.getNewestNotice(chatroom.getCreator(), room);
+    }
+
+    @Override
     public List<RoomNotice> pageNotice(ISecuritySession securitySession, String room, int limit, long offset) throws CircuitException {
         Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
+        if (chatroom == null) {
+            return new ArrayList<>();
+        }
+        return chatroomService.pageNotice(chatroom.getCreator(), room, limit, offset);
+    }
+
+    @Override
+    public List<RoomNotice> pageNoticeOf(ISecuritySession securitySession, String creator, String room, int limit, long offset) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(creator, room);
         if (chatroom == null) {
             return new ArrayList<>();
         }

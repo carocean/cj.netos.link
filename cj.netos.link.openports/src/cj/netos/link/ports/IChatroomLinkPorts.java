@@ -119,8 +119,8 @@ public interface IChatroomLinkPorts extends IOpenportService {
 
     @CjOpenport(usage = "更新聊天室(必须是访问者创建的）背景")
     void updateBackground(ISecuritySession securitySession,
-                     @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
-                     @CjOpenportParameter(usage = "背景url", name = "background") String background) throws CircuitException;
+                          @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                          @CjOpenportParameter(usage = "背景url", name = "background") String background) throws CircuitException;
 
     @CjOpenport(usage = "发布公告", command = "post")
     void publishNotice(ISecuritySession securitySession,
@@ -133,9 +133,21 @@ public interface IChatroomLinkPorts extends IOpenportService {
                                @CjOpenportParameter(usage = "聊天室标识", name = "room") String room) throws CircuitException;
 
 
+    @CjOpenport(usage = "获取最新公告")
+    RoomNotice getNewestNoticeOf(ISecuritySession securitySession,
+                                 @CjOpenportParameter(usage = "聊天室创建者", name = "creator") String creator,
+                               @CjOpenportParameter(usage = "聊天室标识", name = "room") String room) throws CircuitException;
+
     @CjOpenport(usage = "按页查询历史公告")
     List<RoomNotice> pageNotice(ISecuritySession securitySession,
                                 @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
                                 @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
                                 @CjOpenportParameter(usage = "当前偏移", name = "offset") long offset) throws CircuitException;
+
+    @CjOpenport(usage = "按页查询历史公告")
+    List<RoomNotice> pageNoticeOf(ISecuritySession securitySession,
+                                  @CjOpenportParameter(usage = "聊天室创建者", name = "creator") String creator,
+                                  @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                                  @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
+                                  @CjOpenportParameter(usage = "当前偏移", name = "offset") long offset) throws CircuitException;
 }
