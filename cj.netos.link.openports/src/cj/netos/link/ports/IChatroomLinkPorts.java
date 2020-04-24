@@ -40,7 +40,6 @@ public interface IChatroomLinkPorts extends IOpenportService {
 
     @CjOpenport(usage = "分页聊天室")
     List<Chatroom> pageRoom(ISecuritySession securitySession,
-                            @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
                             @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
                             @CjOpenportParameter(usage = "当前偏移", name = "offset") long offset) throws CircuitException;
 

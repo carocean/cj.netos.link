@@ -62,6 +62,13 @@ public interface IGeosphereLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "当前记录位置", name = "skip") long skip
     ) throws CircuitException;
 
+    @CjOpenport(usage = "粉丝数")
+    long countReceptorFans(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器所属分类", name = "category") String category,
+            @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor
+    ) throws CircuitException;
+
     @CjOpenport(usage = "分页指定感知器的网流管道，只有moveableSelf类型的感知器能接收网流管道输入")
     List<Channel> listReceptorChannels(
             ISecuritySession securitySession

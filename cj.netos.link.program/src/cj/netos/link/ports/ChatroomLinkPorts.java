@@ -58,7 +58,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
-    public List<Chatroom> pageRoom(ISecuritySession securitySession, String room, int limit, long offset) throws CircuitException {
+    public List<Chatroom> pageRoom(ISecuritySession securitySession,  int limit, long offset) throws CircuitException {
         return chatroomService.pageRoom(securitySession.principal(), limit, offset);
     }
 

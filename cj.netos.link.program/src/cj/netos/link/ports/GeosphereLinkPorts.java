@@ -61,6 +61,15 @@ public class GeosphereLinkPorts implements IGeosphereLinkPorts {
     }
 
     @Override
+    public long countReceptorFans(ISecuritySession securitySession, String category, String receptor) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(category, receptor);
+        if (geoReceptor == null) {
+            return 0;
+        }
+        return geosphereLinkService.countReceptorFans(geoReceptor);
+    }
+
+    @Override
     public List<Channel> listReceptorChannels(ISecuritySession securitySession) throws CircuitException {
         return geosphereLinkService.listReceptorChannels(securitySession.principal());
     }

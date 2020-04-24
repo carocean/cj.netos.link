@@ -274,6 +274,12 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
     }
 
     @Override
+    public long countReceptorFans( GeoReceptor geoReceptor) {
+        String where = String.format("{'tuple.receptor':'%s'}",geoReceptor.getId());
+        return home.tupleCount(_getFollowColName(geoReceptor.getCategory()),where);
+    }
+
+    @Override
     public List<Channel> listReceptorChannels(String principal) {
         ICube cube = super.cube(principal);
         String cjql = "select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.creator':'?(creator)','tuple.outGeoSelector':'?(outGeoSelector)'}";

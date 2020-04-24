@@ -24,4 +24,5 @@ public interface IGeosphereLinkService {
 
     List<Channel> listReceptorChannels(String principal);
 
+    long countReceptorFans( GeoReceptor geoReceptor);
 }
