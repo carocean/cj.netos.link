@@ -239,7 +239,8 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
             follows.put(doc.tuple().getPerson(), doc.tuple());
         }
         LatLng latLng = geoReceptor.getLocation();
-        double radius = geoReceptor.getRadius();
+        //由于粉丝不在感知器半径内，也能收到消息，所以设为最大公里数求粉丝
+        double radius = /*geoReceptor.getRadius()*/Long.MAX_VALUE;
         //查询这些用户的mobiles分类下的感知器，并以此作为远近距离排序
         //distanceField:"distance" 距离字段别称
         //"distanceMultiplier": 0.001,
