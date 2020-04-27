@@ -18,6 +18,7 @@ public class GeoDocument {
     String sourceApp;
     String receptor;
     String creator;
+    String category;
     long ctime;
     long atime;
     long rtime;
@@ -27,6 +28,14 @@ public class GeoDocument {
     double wy;
     ///location是GEOPoi对象
     LatLng location;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public String getId() {
         return id;

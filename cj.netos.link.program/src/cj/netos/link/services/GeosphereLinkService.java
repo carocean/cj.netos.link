@@ -200,7 +200,7 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         AggregateIterable<Document> it = home.aggregate(_getDocumentColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(limitjson), Document.parse(skipjson), Document.parse(sortjson)));
         List<GeoPOD> list = new ArrayList<>();
         for (Document doc : it) {
-            GeoPOD pod = GeoPOD.parse(doc);
+            GeoPOD pod = GeoPOD.parse(doc,category);
             list.add(pod);
         }
         return list;

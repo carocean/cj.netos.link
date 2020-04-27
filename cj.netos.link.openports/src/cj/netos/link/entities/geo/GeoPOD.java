@@ -11,11 +11,12 @@ public class GeoPOD {
     GeoDocument document;
     double distance;
 
-    public static GeoPOD parse(Document doc) {
+    public static GeoPOD parse(Document doc, GeoCategory category) {
         GeoPOD pod=new GeoPOD();
         Map<String,Object> tuple=(Map<String,Object>)doc.get("tuple");
         pod.setDistance((double)tuple.get("distance"));
         pod.document=GeoDocument.parse(tuple);
+        pod.document.category=category.getId();
         return pod;
     }
 
