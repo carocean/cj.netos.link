@@ -196,7 +196,8 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
                 "}", location.toCoordinate(), radius);
         String limitjson = String.format("{'$limit':%s}", limit);
         String skipjson = String.format("{'$skip':%s}", skip);
-        AggregateIterable<Document> it = home.aggregate(_getDocumentColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(limitjson), Document.parse(skipjson)));
+        String sortjson = String.format("{'$sort':{'tuple.distance':1,'tuple.ctime':1}}");
+        AggregateIterable<Document> it = home.aggregate(_getDocumentColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(limitjson), Document.parse(skipjson), Document.parse(sortjson)));
         List<GeoPOD> list = new ArrayList<>();
         for (Document doc : it) {
             GeoPOD pod = GeoPOD.parse(doc);
@@ -275,9 +276,9 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
     }
 
     @Override
-    public long countReceptorFans( GeoReceptor geoReceptor) {
-        String where = String.format("{'tuple.receptor':'%s'}",geoReceptor.getId());
-        return home.tupleCount(_getFollowColName(geoReceptor.getCategory()),where);
+    public long countReceptorFans(GeoReceptor geoReceptor) {
+        String where = String.format("{'tuple.receptor':'%s'}", geoReceptor.getId());
+        return home.tupleCount(_getFollowColName(geoReceptor.getCategory()), where);
     }
 
     @Override
