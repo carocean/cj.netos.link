@@ -7,6 +7,7 @@ public class Chatroom {
     String leading;
     String microsite;
     String background;
+    boolean isForegroundWhite;
     long ctime;
     public String getMicrosite() {
         return microsite;
@@ -14,6 +15,14 @@ public class Chatroom {
 
     public void setMicrosite(String microsite) {
         this.microsite = microsite;
+    }
+
+    public boolean isForegroundWhite() {
+        return isForegroundWhite;
+    }
+
+    public void setForegroundWhite(boolean foregroundWhite) {
+        isForegroundWhite = foregroundWhite;
     }
 
     public String getBackground() {

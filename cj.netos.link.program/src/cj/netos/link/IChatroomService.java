@@ -49,5 +49,7 @@ public interface IChatroomService {
 
     void updateBackground(String creator, String room, String background);
 
+    void updateRoomForeground(String creator, String room, boolean isForegroundWhite);
+
 }
 

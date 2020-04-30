@@ -121,6 +121,11 @@ public interface IChatroomLinkPorts extends IOpenportService {
                           @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
                           @CjOpenportParameter(usage = "背景url", name = "background") String background) throws CircuitException;
 
+    @CjOpenport(usage = "更新聊天室(必须是访问者创建的）前景色")
+    void updateRoomForeground(ISecuritySession securitySession,
+                              @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                              @CjOpenportParameter(usage = "是否为白色", name = "isForegroundWhite") boolean isForegroundWhite) throws CircuitException;
+
     @CjOpenport(usage = "发布公告", command = "post")
     void publishNotice(ISecuritySession securitySession,
                        @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
@@ -135,7 +140,7 @@ public interface IChatroomLinkPorts extends IOpenportService {
     @CjOpenport(usage = "获取最新公告")
     RoomNotice getNewestNoticeOf(ISecuritySession securitySession,
                                  @CjOpenportParameter(usage = "聊天室创建者", name = "creator") String creator,
-                               @CjOpenportParameter(usage = "聊天室标识", name = "room") String room) throws CircuitException;
+                                 @CjOpenportParameter(usage = "聊天室标识", name = "room") String room) throws CircuitException;
 
     @CjOpenport(usage = "按页查询历史公告")
     List<RoomNotice> pageNotice(ISecuritySession securitySession,

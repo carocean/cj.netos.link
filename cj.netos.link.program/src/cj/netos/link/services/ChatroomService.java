@@ -180,6 +180,14 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     }
 
     @Override
+    public void updateRoomForeground(String creator, String room, boolean isForegroundWhite) {
+        ICube cube = cube(creator);
+        cube.updateDocOne("chat.rooms",
+                Document.parse(String.format("{'tuple.room':'%s'}", room)),
+                Document.parse(String.format("{'$set':{'tuple.isForegroundWhite':'%s'}}", isForegroundWhite)));
+    }
+
+    @Override
     public void addNotice(String principal, RoomNotice roomNotice) {
         ICube cube = cube(principal);
         cube.saveDoc("chat.notices", new TupleDocument<>(roomNotice));

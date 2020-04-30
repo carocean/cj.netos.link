@@ -149,6 +149,15 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
+    public void updateRoomForeground(ISecuritySession securitySession, String room, boolean isForegroundWhite) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
+        if (chatroom == null) {
+            throw new CircuitException("404", "聊天室不存在");
+        }
+        chatroomService.updateRoomForeground(chatroom.getCreator(), room,  isForegroundWhite);
+    }
+
+    @Override
     public void setShowNick(ISecuritySession securitySession, String room, String creator, boolean isShowNick) throws CircuitException {
         Chatroom chatroom = chatroomService.getRoom(creator, room);
         if (chatroom == null) {
