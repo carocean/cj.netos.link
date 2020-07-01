@@ -4,6 +4,7 @@ import cj.netos.link.entities.Channel;
 import cj.netos.link.entities.geo.GeoPOD;
 import cj.netos.link.entities.geo.GeoPOF;
 import cj.netos.link.entities.geo.GeoPOI;
+import cj.netos.link.entities.geo.LatLng;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.IOpenportService;
 import cj.studio.openport.ISecuritySession;
@@ -34,6 +35,16 @@ public interface IGeosphereLinkPorts extends IOpenportService {
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "要搜索的感知器类别，为空是所有分类，格式为：类别1｜类别2｜类别3", name = "geoType") String geoType,
+            @CjOpenportParameter(usage = "分页大小，注意：在多分类查询情况下，是每个分类查询出limit个文档", name = "limit", defaultValue = "100") long limit,
+            @CjOpenportParameter(usage = "偏移", name = "offset", defaultValue = "0") long skip
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "查询指定圆周内的指定类型的感知器，并计算离圆心的距离")
+    List<GeoPOI> searchAroundLocation(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "搜索位置", name = "location") LatLng location,
+            @CjOpenportParameter(usage = "搜索半径，单位米", name = "radius") double radius,
             @CjOpenportParameter(usage = "要搜索的感知器类别，为空是所有分类，格式为：类别1｜类别2｜类别3", name = "geoType") String geoType,
             @CjOpenportParameter(usage = "分页大小，注意：在多分类查询情况下，是每个分类查询出limit个文档", name = "limit", defaultValue = "100") long limit,
             @CjOpenportParameter(usage = "偏移", name = "offset", defaultValue = "0") long skip

@@ -99,6 +99,36 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
 //    }
 
     @Override
+    public List<GeoPOI> searchAroundLocation(String principal, LatLng location, double radius, String geoType, long limit, long skip) {
+        LatLng latLng = location;
+        List<GeoPOI> list = new ArrayList<>();
+
+        List<GeoCategory> categories = null;
+        if (StringUtil.isEmpty(geoType)) {
+            categories = listCategory();
+        } else {
+            categories = findCategories(geoType);
+        }
+        for (GeoCategory category : categories) {
+            List<GeoPOI> pois = _searchPoiInCategory(latLng, radius, category, limit, skip);
+            list.addAll(pois);
+        }
+        if (categories.size() > 1) {
+            //排序要
+            Collections.sort(list, new Comparator<GeoPOI>() {
+                @Override
+                public int compare(GeoPOI o1, GeoPOI o2) {
+                    if (o1.getDistance() == o2.getDistance()) {
+                        return 0;
+                    }
+                    return o1.getDistance() > o2.getDistance() ? 1 : -1;
+                }
+            });
+        }
+        return list;
+    }
+
+    @Override
     public List<GeoPOI> searchAroundReceptors(String person, GeoReceptor geoReceptor, String geoType, long limit, long skip) {
         List<GeoCategory> categories = null;
         if (StringUtil.isEmpty(geoType)) {
@@ -200,7 +230,7 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         AggregateIterable<Document> it = home.aggregate(_getDocumentColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(limitjson), Document.parse(skipjson), Document.parse(sortjson)));
         List<GeoPOD> list = new ArrayList<>();
         for (Document doc : it) {
-            GeoPOD pod = GeoPOD.parse(doc,category);
+            GeoPOD pod = GeoPOD.parse(doc, category);
             list.add(pod);
         }
         return list;

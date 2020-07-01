@@ -34,6 +34,18 @@ public class GeosphereLinkPorts implements IGeosphereLinkPorts {
     }
 
     @Override
+    public List<GeoPOI> searchAroundLocation(ISecuritySession securitySession, LatLng location, double radius, String geoType, long limit, long skip) throws CircuitException {
+        if (location == null) {
+            throw new CircuitException("404", String.format("位置为空"));
+        }
+        if (radius <= 0) {
+            throw new CircuitException("500","半径小于等于0");
+        }
+
+        return geosphereLinkService.searchAroundLocation(securitySession.principal(),location,radius,geoType,limit,skip);
+    }
+
+    @Override
     public void followReceptor(ISecuritySession securitySession, String category, String receptor) throws CircuitException {
         GeoReceptor geoReceptor = geosphereLinkService.getReceptor(category, receptor);
         if (geoReceptor == null) {

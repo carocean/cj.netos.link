@@ -1,10 +1,7 @@
 package cj.netos.link;
 
 import cj.netos.link.entities.Channel;
-import cj.netos.link.entities.geo.GeoPOD;
-import cj.netos.link.entities.geo.GeoPOF;
-import cj.netos.link.entities.geo.GeoPOI;
-import cj.netos.link.entities.geo.GeoReceptor;
+import cj.netos.link.entities.geo.*;
 
 import java.util.List;
 
@@ -25,4 +22,7 @@ public interface IGeosphereLinkService {
     List<Channel> listReceptorChannels(String principal);
 
     long countReceptorFans( GeoReceptor geoReceptor);
+
+    List<GeoPOI> searchAroundLocation(String principal, LatLng location, double radius, String geoType, long limit, long skip);
+
 }
