@@ -6,9 +6,11 @@ import cj.netos.link.entities.geo.GeoPOF;
 import cj.netos.link.entities.geo.GeoPOI;
 import cj.netos.link.entities.geo.LatLng;
 import cj.studio.ecm.net.CircuitException;
+import cj.studio.openport.AccessTokenIn;
 import cj.studio.openport.IOpenportService;
 import cj.studio.openport.ISecuritySession;
 import cj.studio.openport.annotations.CjOpenport;
+import cj.studio.openport.annotations.CjOpenportAppSecurity;
 import cj.studio.openport.annotations.CjOpenportParameter;
 import cj.studio.openport.annotations.CjOpenports;
 
@@ -40,7 +42,8 @@ public interface IGeosphereLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "偏移", name = "offset", defaultValue = "0") long skip
     ) throws CircuitException;
 
-    @CjOpenport(usage = "查询指定圆周内的指定类型的感知器，并计算离圆心的距离")
+    @CjOpenportAppSecurity
+    @CjOpenport(usage = "查询指定圆周内的指定类型的感知器，并计算离圆心的距离",tokenIn = AccessTokenIn.nope)
     List<GeoPOI> searchAroundLocation(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "搜索位置", name = "location") LatLng location,
