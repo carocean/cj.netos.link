@@ -21,7 +21,7 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     @Override
     public void createChannel(ISecuritySession securitySession, String channel, String title, String leading, String outPersonSelector, String outGeoSelector) throws CircuitException {
         if (netflowLinkService.existsChannel(securitySession.principal(), channel)) {
-            CJSystem.logging().warn(getClass(),String.format("用户<%s>已存在管道:%s",securitySession.principal(),channel));
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>已存在管道:%s", securitySession.principal(), channel));
             return;
         }
         Channel ch = new Channel();
@@ -84,11 +84,11 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     @Override
     public void addInputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
         if (!netflowLinkService.existsChannel(securitySession.principal(), channel)) {
-            CJSystem.logging().warn(getClass(),String.format("用户<%s>不存在管道<%s>",securitySession.principal(),channel));
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>不存在管道<%s>", securitySession.principal(), channel));
             return;
         }
         if (netflowLinkService.existsInputPerson(securitySession.principal(), channel, person)) {
-            CJSystem.logging().warn(getClass(),String.format("用户<%s>的管道<%s>的输入端已有公众<%s>",securitySession.principal(),channel,person));
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>的管道<%s>的输入端已有公众<%s>", securitySession.principal(), channel, person));
             return;
         }
         ChannelInputPerson channelInputPerson = new ChannelInputPerson();
@@ -116,11 +116,11 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     @Override
     public void addOutputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
         if (!netflowLinkService.existsChannel(securitySession.principal(), channel)) {
-            CJSystem.logging().warn(getClass(),String.format("用户<%s>不存在管道<%s>",securitySession.principal(),channel));
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>不存在管道<%s>", securitySession.principal(), channel));
             return;
         }
         if (netflowLinkService.existsOutputPerson(securitySession.principal(), channel, person)) {
-            CJSystem.logging().warn(getClass(),String.format("用户<%s>的管道<%s>的输出端已有公众<%s>",securitySession.principal(),channel,person));
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>的管道<%s>的输出端已有公众<%s>", securitySession.principal(), channel, person));
             return;
         }
         ChannelOutputPerson outputPerson = new ChannelOutputPerson();
@@ -131,8 +131,30 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
+    public void addOutputPersonOfCreator(String creator, String channel, String person) throws CircuitException {
+        if (!netflowLinkService.existsChannel(creator, channel)) {
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>不存在管道<%s>", creator, channel));
+            return;
+        }
+        if (netflowLinkService.existsOutputPerson(creator, channel, person)) {
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>的管道<%s>的输出端已有公众<%s>", creator, channel, person));
+            return;
+        }
+        ChannelOutputPerson outputPerson = new ChannelOutputPerson();
+        outputPerson.setAtime(System.currentTimeMillis());
+        outputPerson.setChannel(channel);
+        outputPerson.setPerson(person);
+        netflowLinkService.addOutputPerson(creator, outputPerson);
+    }
+
+    @Override
     public void removeOutputPerson(ISecuritySession securitySession, String channel, String person) throws CircuitException {
         netflowLinkService.removeOutputPerson(securitySession.principal(), channel, person);
+    }
+
+    @Override
+    public void removeOutputPersonOfCreator(ISecuritySession securitySession, String creator, String channel, String person) throws CircuitException {
+        netflowLinkService.removeOutputPerson(creator, channel, person);
     }
 
     @Override
@@ -153,7 +175,7 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     @Override
     public void addPerson(ISecuritySession securitySession, PersonInfo person) throws CircuitException {
         if (netflowLinkService.existsPerson(securitySession.principal(), person.getOfficial())) {
-            CJSystem.logging().warn(getClass(),String.format("用户<%s>已存在公众:%s",securitySession.principal(),person));
+            CJSystem.logging().warn(getClass(), String.format("用户<%s>已存在公众:%s", securitySession.principal(), person));
             return;
         }
         netflowLinkService.addPerson(securitySession.principal(), person);

@@ -121,9 +121,25 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "上游公众", name = "person") String person
     ) throws CircuitException;
 
+    @CjOpenport(usage = "为管道添加输出公众到指定创建者的管道")
+    void addOutputPersonOfCreator(
+            @CjOpenportParameter(usage = "管道创建者", name = "creator") String creator,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
+            @CjOpenportParameter(usage = "上游公众", name = "person") String person
+    ) throws CircuitException;
+
     @CjOpenport(usage = "移除输出公众")
     void removeOutputPerson(
             ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
+            @CjOpenportParameter(usage = "上游公众", name = "person") String person
+    ) throws CircuitException;
+
+
+    @CjOpenport(usage = "移除输出公众")
+    void removeOutputPersonOfCreator(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "管道的创建者。", name = "creator") String creator,
             @CjOpenportParameter(usage = "所在的管道号。", name = "channel") String channel,
             @CjOpenportParameter(usage = "上游公众", name = "person") String person
     ) throws CircuitException;
