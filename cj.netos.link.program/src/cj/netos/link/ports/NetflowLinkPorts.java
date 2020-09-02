@@ -72,6 +72,11 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
+    public List<Channel> getAllMyChannel(ISecuritySession securitySession, long ctime) throws CircuitException {
+        return netflowLinkService.getAllMyChannel(securitySession.principal(), ctime);
+    }
+
+    @Override
     public Channel getPersonChannel(ISecuritySession securitySession, String person, String channel) throws CircuitException {
         return netflowLinkService.getPersonChannel(person, channel);
     }

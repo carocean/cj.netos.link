@@ -58,4 +58,6 @@ public interface INetflowLinkService {
 
     List<PersonInfo> pageInputPersonOf(String person, String channel, int limit, long offset);
 
+    List<Channel> getAllMyChannel(String principal, long ctime);
+
 }

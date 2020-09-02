@@ -72,7 +72,7 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     @Override
     public List<Channel> pageChannel(String principal, int limit, long offset) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple channels %s where {}", limit, offset, Channel.class.getName());
+        String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':-1}).limit(%s).skip(%s) from tuple channels %s where {}", limit, offset, Channel.class.getName());
         IQuery<Channel> query = cube.createQuery(cjql);
         List<IDocument<Channel>> docs = query.getResultList();
         List<Channel> channels = new ArrayList<>();
@@ -93,6 +93,19 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
             return null;
         }
         return doc.tuple();
+    }
+
+    @Override
+    public List<Channel> getAllMyChannel(String principal, long ctime) {
+        ICube cube = cube(principal);
+        String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':-1}) from tuple channels %s where {'tuple.ctime':{'$gt':%s}}", Channel.class.getName(), ctime);
+        IQuery<Channel> query = cube.createQuery(cjql);
+        List<IDocument<Channel>> docs = query.getResultList();
+        List<Channel> channels = new ArrayList<>();
+        for (IDocument<Channel> document : docs) {
+            channels.add(document.tuple());
+        }
+        return channels;
     }
 
     @Override

@@ -72,6 +72,12 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "管道号。", name = "channel") String channel
     ) throws CircuitException;
 
+    @CjOpenport(usage = "从指定的创建时间获取我的管道")
+    List<Channel> getAllMyChannel(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "创建时间。", name = "ctime") long ctime
+    ) throws CircuitException;
+
     @CjOpenport(usage = "获取指定用户的所有管道")
     List<Channel> listPersonChannels(
             ISecuritySession securitySession,
