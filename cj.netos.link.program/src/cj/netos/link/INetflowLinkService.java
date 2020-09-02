@@ -60,4 +60,8 @@ public interface INetflowLinkService {
 
     List<Channel> getAllMyChannel(String principal, long ctime);
 
+    List<ChannelInputPerson> listAllInputPerson(String principal, String channel, long atime);
+
+    List<ChannelOutputPerson> listAllOutputPerson(String principal, String channel, long atime);
+
 }

@@ -168,6 +168,16 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
+    public List<ChannelInputPerson> listAllInputPerson(ISecuritySession securitySession,  String channel, long atime) throws CircuitException {
+        return netflowLinkService.listAllInputPerson(securitySession.principal(), channel,atime);
+    }
+
+    @Override
+    public List<ChannelOutputPerson> listAllOutputPerson(ISecuritySession securitySession,  String channel, long atime) throws CircuitException {
+        return netflowLinkService.listAllOutputPerson(securitySession.principal(), channel,atime);
+    }
+
+    @Override
     public List<PersonInfo> pageOutputPersonOf(ISecuritySession securitySession, String person, String channel, int limit, long offset) throws CircuitException {
         return netflowLinkService.pageOutputPersonOf(person, channel, limit, offset);
     }

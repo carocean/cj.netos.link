@@ -180,6 +180,34 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
+    public List<ChannelInputPerson> listAllInputPerson(String principal, String channel, long atime) {
+        ICube cube = cube(principal);
+        String cjql = String.format("select {'tuple':'*'} from tuple input.persons %s where {'tuple.channel':'%s','tuple.atime':{'$gt':%s}}", ChannelInputPerson.class.getName(), channel, atime);
+        IQuery<ChannelInputPerson> query = cube.createQuery(cjql);
+        List<IDocument<ChannelInputPerson>> docs = query.getResultList();
+        List<ChannelInputPerson> inputPersonList = new ArrayList<>();
+        for (IDocument<ChannelInputPerson> doc : docs) {
+            inputPersonList.add(doc.tuple()
+            );
+        }
+        return inputPersonList;
+    }
+
+    @Override
+    public List<ChannelOutputPerson> listAllOutputPerson(String principal, String channel, long atime) {
+        ICube cube = cube(principal);
+        String cjql = String.format("select {'tuple':'*'} from tuple output.persons %s where {'tuple.channel':'%s','tuple.atime':{'$gt':%s}}", ChannelOutputPerson.class.getName(), channel, atime);
+        IQuery<ChannelOutputPerson> query = cube.createQuery(cjql);
+        List<IDocument<ChannelOutputPerson>> docs = query.getResultList();
+        List<ChannelOutputPerson> personArrayList = new ArrayList<>();
+        for (IDocument<ChannelOutputPerson> doc : docs) {
+            personArrayList.add(doc.tuple()
+            );
+        }
+        return personArrayList;
+    }
+
+    @Override
     public boolean existsOutputPerson(String principal, String channel, String person) {
         ICube cube = cube(principal);
         return cube.tupleCount("output.persons", String.format("{'tuple.channel':'%s','tuple.person':'%s'}", channel, person)) > 0;
