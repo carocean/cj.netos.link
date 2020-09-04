@@ -25,7 +25,7 @@ public class GeoDocument {
     long dtime;
     String state;
     String text;
-    double wy;
+    String purchaseSn;
     ///location是GEOPoi对象
     LatLng location;
 
@@ -141,12 +141,12 @@ public class GeoDocument {
         this.text = text;
     }
 
-    public double getWy() {
-        return wy;
+    public String getPurchaseSn() {
+        return purchaseSn;
     }
 
-    public void setWy(double wy) {
-        this.wy = wy;
+    public void setPurchaseSn(String purchaseSn) {
+        this.purchaseSn = purchaseSn;
     }
 
     public LatLng getLocation() {
