@@ -53,6 +53,16 @@ public interface IGeosphereLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "偏移", name = "offset", defaultValue = "0") long skip
     ) throws CircuitException;
 
+    @CjOpenportAppSecurity
+    @CjOpenport(usage = "查询指定圆周内的指定类型和用户的感知器，并计算离圆心的距离",tokenIn = AccessTokenIn.nope)
+    List<GeoPOI> searchPersonAroundLocation(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "搜索位置", name = "location") LatLng location,
+            @CjOpenportParameter(usage = "搜索半径，单位米", name = "radius") double radius,
+            @CjOpenportParameter(usage = "要搜索的感知器类别，为空是所有分类，格式为：类别1｜类别2｜类别3", name = "geoType") String geoType,
+            @CjOpenportParameter(usage = "公众", name = "person") String person
+    ) throws CircuitException;
+
     @CjOpenport(usage = "我关注指定的感知器")
     void followReceptor(
             ISecuritySession securitySession,

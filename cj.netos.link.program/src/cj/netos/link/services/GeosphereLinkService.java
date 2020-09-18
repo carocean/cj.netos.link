@@ -129,6 +129,36 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
     }
 
     @Override
+    public List<GeoPOI> searchPersonAroundLocation(String principal, LatLng location, double radius, String geoType, String person) {
+        LatLng latLng = location;
+        List<GeoPOI> list = new ArrayList<>();
+
+        List<GeoCategory> categories = null;
+        if (StringUtil.isEmpty(geoType)) {
+            categories = listCategory();
+        } else {
+            categories = findCategories(geoType);
+        }
+        for (GeoCategory category : categories) {
+            List<GeoPOI> pois = _searchPoiInCategoryWherePerson(latLng, radius, category, person);
+            list.addAll(pois);
+        }
+        if (categories.size() > 1) {
+            //排序要
+            Collections.sort(list, new Comparator<GeoPOI>() {
+                @Override
+                public int compare(GeoPOI o1, GeoPOI o2) {
+                    if (o1.getDistance() == o2.getDistance()) {
+                        return 0;
+                    }
+                    return o1.getDistance() > o2.getDistance() ? 1 : -1;
+                }
+            });
+        }
+        return list;
+    }
+
+    @Override
     public List<GeoPOI> searchAroundReceptors(String person, GeoReceptor geoReceptor, String geoType, long limit, long skip) {
         List<GeoCategory> categories = null;
         if (StringUtil.isEmpty(geoType)) {
@@ -173,6 +203,28 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         String limitjson = String.format("{'$limit':%s}", limit);
         String skipjson = String.format("{'$skip':%s}", skip);
         AggregateIterable<Document> it = home.aggregate(_getReceptorColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(limitjson), Document.parse(skipjson)));
+        List<GeoPOI> list = new ArrayList<>();
+        for (Document doc : it) {
+            GeoPOI poi = GeoPOI.parse(doc);
+            list.add(poi);
+        }
+        return list;
+    }
+
+    private List<GeoPOI> _searchPoiInCategoryWherePerson(LatLng location, double radius, GeoCategory category, String person) {
+        //distanceField:"distance" 距离字段别称
+        //"distanceMultiplier": 0.001,
+        //{ $limit : 5 }
+        String json = String.format("{" +
+                "'$geoNear':{" +
+                "'near':{'type':'Point','coordinates':%s}," +
+                "'distanceField':'tuple.distance'," +
+                "'maxDistance':%s," +
+                "'spherical':true" +
+                "}" +
+                "}", location.toCoordinate(), radius);
+        String matchjson = String.format("{'$match':{'tuple.creator':'%s'}}", person);
+        AggregateIterable<Document> it = home.aggregate(_getReceptorColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(matchjson)));
         List<GeoPOI> list = new ArrayList<>();
         for (Document doc : it) {
             GeoPOI poi = GeoPOI.parse(doc);

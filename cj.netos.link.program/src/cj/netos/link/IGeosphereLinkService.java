@@ -25,4 +25,6 @@ public interface IGeosphereLinkService {
 
     List<GeoPOI> searchAroundLocation(String principal, LatLng location, double radius, String geoType, long limit, long skip);
 
+    List<GeoPOI> searchPersonAroundLocation(String principal, LatLng location, double radius, String geoType, String person);
+
 }
