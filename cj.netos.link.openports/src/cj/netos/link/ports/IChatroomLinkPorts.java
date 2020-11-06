@@ -50,6 +50,13 @@ public interface IChatroomLinkPorts extends IOpenportService {
                    @CjOpenportParameter(usage = "成员名", name = "person") String person,
                    @CjOpenportParameter(usage = "成员扮演的角色，有：客服(servicer)，普通成员(user)", name = "actor") String actor) throws CircuitException;
 
+    @CjOpenport(usage = "为聊天室添加成员")
+    void addMemberToOwner(ISecuritySession securitySession,
+                          @CjOpenportParameter(usage = "聊天室标识", name = "roomOwner") String roomOwner,
+                   @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                   @CjOpenportParameter(usage = "成员名", name = "person") String person,
+                   @CjOpenportParameter(usage = "成员扮演的角色，有：客服(servicer)，普通成员(user)", name = "actor") String actor) throws CircuitException;
+
 
     @CjOpenport(usage = "为聊天室移除成员")
     void removeMember(ISecuritySession securitySession,

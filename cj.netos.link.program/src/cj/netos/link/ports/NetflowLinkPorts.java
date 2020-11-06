@@ -10,6 +10,7 @@ import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
 import cj.studio.ecm.net.CircuitException;
 import cj.studio.openport.ISecuritySession;
+import cj.ultimate.util.StringUtil;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     INetflowLinkService netflowLinkService;
 
     @Override
-    public void createChannel(ISecuritySession securitySession, String channel, String title, String leading, String outPersonSelector, String outGeoSelector) throws CircuitException {
+    public void createChannel(ISecuritySession securitySession, String channel, String title, String leading, String upstreamPerson, String outPersonSelector, String outGeoSelector) throws CircuitException {
         if (netflowLinkService.existsChannel(securitySession.principal(), channel)) {
             CJSystem.logging().warn(getClass(), String.format("用户<%s>已存在管道:%s", securitySession.principal(), channel));
             return;
@@ -33,6 +34,7 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
         ch.setOutPersonSelector(outPersonSelector);
         ch.setOutGeoSelector(outGeoSelector);
         ch.setTitle(title);
+        ch.setUpstreamPerson(StringUtil.isEmpty(upstreamPerson) ? securitySession.principal() : upstreamPerson);
         netflowLinkService.addChannel(securitySession.principal(), ch);
     }
 
@@ -168,13 +170,13 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
-    public List<ChannelInputPerson> listAllInputPerson(ISecuritySession securitySession,  String channel, long atime) throws CircuitException {
-        return netflowLinkService.listAllInputPerson(securitySession.principal(), channel,atime);
+    public List<ChannelInputPerson> listAllInputPerson(ISecuritySession securitySession, String channel, long atime) throws CircuitException {
+        return netflowLinkService.listAllInputPerson(securitySession.principal(), channel, atime);
     }
 
     @Override
-    public List<ChannelOutputPerson> listAllOutputPerson(ISecuritySession securitySession,  String channel, long atime) throws CircuitException {
-        return netflowLinkService.listAllOutputPerson(securitySession.principal(), channel,atime);
+    public List<ChannelOutputPerson> listAllOutputPerson(ISecuritySession securitySession, String channel, long atime) throws CircuitException {
+        return netflowLinkService.listAllOutputPerson(securitySession.principal(), channel, atime);
     }
 
     @Override

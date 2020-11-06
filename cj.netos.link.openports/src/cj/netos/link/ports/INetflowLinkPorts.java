@@ -22,6 +22,7 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "管道号", name = "channel") String channel,
             @CjOpenportParameter(usage = "管道显示名", name = "title") String title,
             @CjOpenportParameter(usage = "管道图标", name = "leading") String leading,
+            @CjOpenportParameter(usage = "上游公众，如果为空表示是自己创建的", name = "upstreamPerson") String upstreamPerson,
             @CjOpenportParameter(usage = "公众选择策略：only_select, all_except,", name = "outPersonSelector", defaultValue = "only_select") String outPersonSelector,
             @CjOpenportParameter(usage = "是否选择出口地圈,true为是，false为否", name = "outGeoSelector", defaultValue = "true") String outGeoSelector
     ) throws CircuitException;

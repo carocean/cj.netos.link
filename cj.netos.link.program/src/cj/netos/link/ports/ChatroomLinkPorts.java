@@ -81,6 +81,24 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
+    public void addMemberToOwner(ISecuritySession securitySession, String roomOwner, String room, String person, String actor) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(roomOwner, room);
+        if (chatroom == null) {
+            throw new CircuitException("500", String.format("不存在聊天室。%s %s", securitySession.principal(), room));
+        }
+        if (chatroomService.existsMember(chatroom.getCreator(), room, person)) {
+            throw new CircuitException("500", "成员已在聊天室。");
+        }
+        RoomMember member = new RoomMember();
+        member.setActor(actor);
+        member.setAtime(System.currentTimeMillis());
+        member.setNickName(null);
+        member.setPerson(person);
+        member.setRoom(room);
+        chatroomService.addMember(chatroom.getCreator(), member);
+    }
+
+    @Override
     public void removeMember(ISecuritySession securitySession, String room, String person) throws CircuitException {
         Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
         if (chatroom == null) {

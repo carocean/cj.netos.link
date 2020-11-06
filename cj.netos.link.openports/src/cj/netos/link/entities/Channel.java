@@ -5,6 +5,7 @@ public class Channel {
     String title;
     String leading;
     String creator;
+    String upstreamPerson;
     String inPersonSelector;
     String outPersonSelector;//only_select, all_except,
     String outGeoSelector;//true,false;
@@ -16,6 +17,14 @@ public class Channel {
 
     public void setInPersonSelector(String inPersonSelector) {
         this.inPersonSelector = inPersonSelector;
+    }
+
+    public String getUpstreamPerson() {
+        return upstreamPerson;
+    }
+
+    public void setUpstreamPerson(String upstreamPerson) {
+        this.upstreamPerson = upstreamPerson;
     }
 
     public String getChannel() {
