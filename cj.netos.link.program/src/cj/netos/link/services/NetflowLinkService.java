@@ -304,6 +304,9 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     @Override
     public void addPerson(String principal, PersonInfo person) {
         ICube cube = cube(principal);
+        if (cube.tupleCount("persons", String.format("{'tuple.official':'%s'}", person.getOfficial())) > 0) {
+            cube.deleteDocOne("persons", String.format("{'tuple.official':'%s'}", person.getOfficial()));
+        }
         cube.saveDoc("persons", new TupleDocument<>(person));
     }
 
