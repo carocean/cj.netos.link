@@ -174,7 +174,7 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "加入时间", name = "atime") long atime
     ) throws CircuitException;
 
-    @CjOpenport(usage = "分页管道的上游公众")
+    @CjOpenport(usage = "分页管道的下游公众")
     List<PersonInfo> pageOutputPersonOf(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "公号。", name = "person") String person,
@@ -183,7 +183,7 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
     ) throws CircuitException;
 
-    @CjOpenport(usage = "分页管道的下游公众")
+    @CjOpenport(usage = "分页管道的上游公众")
     List<PersonInfo> pageInputPersonOf(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "公号。", name = "person") String person,
