@@ -25,7 +25,6 @@ public interface IGeosphereLinkPorts extends IOpenportService {
     @CjOpenport(usage = "查询指定感知器半径内的感知器，并计算离我的距离")
     List<GeoPOI> searchAroundReceptors(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "要搜索的感知器类别，为空是所有分类，格式为：类别1｜类别2｜类别3", name = "geoType") String geoType,
             @CjOpenportParameter(usage = "分页大小。注意：在多分类查询情况下，是每个分类查询出limit个文档", name = "limit", defaultValue = "100") long limit,
@@ -35,7 +34,6 @@ public interface IGeosphereLinkPorts extends IOpenportService {
     @CjOpenport(usage = "查询指定感知器半径内的活动，并计算离我的距离")
     List<GeoPOD> searchAroundDocuments(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "要搜索的感知器类别，为空是所有分类，格式为：类别1｜类别2｜类别3", name = "geoType") String geoType,
             @CjOpenportParameter(usage = "分页大小，注意：在多分类查询情况下，是每个分类查询出limit个文档", name = "limit", defaultValue = "100") long limit,
@@ -66,21 +64,18 @@ public interface IGeosphereLinkPorts extends IOpenportService {
     @CjOpenport(usage = "我关注指定的感知器")
     void followReceptor(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor
     ) throws CircuitException;
 
     @CjOpenport(usage = "我不再关注指定的感知器")
     void unfollowReceptor(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor
     ) throws CircuitException;
 
     @CjOpenport(usage = "分页指定感知器的粉丝，并计算离我的距离")
     List<GeoPOF> pageReceptorFans(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor,
             @CjOpenportParameter(usage = "分页大小", name = "limit") long limit,
             @CjOpenportParameter(usage = "当前记录位置", name = "skip") long skip
@@ -89,7 +84,6 @@ public interface IGeosphereLinkPorts extends IOpenportService {
     @CjOpenport(usage = "粉丝数")
     long countReceptorFans(
             ISecuritySession securitySession,
-            @CjOpenportParameter(usage = "感知器所属分类", name = "category") String category,
             @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor
     ) throws CircuitException;
 

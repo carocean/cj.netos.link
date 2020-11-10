@@ -16,19 +16,19 @@ public class GeosphereLinkPorts implements IGeosphereLinkPorts {
     IGeosphereLinkService geosphereLinkService;
 
     @Override
-    public List<GeoPOI> searchAroundReceptors(ISecuritySession securitySession, String category, String receptor, String geoType,long limit,long skip) throws CircuitException {
-        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(category, receptor);
+    public List<GeoPOI> searchAroundReceptors(ISecuritySession securitySession,  String receptor, String geoType,long limit,long skip) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(receptor);
         if (geoReceptor == null) {
-            throw new CircuitException("404", String.format("分类<%s>不存在地理感知器：%s。", category, receptor));
+            throw new CircuitException("404", String.format("不存在地理感知器：%s。", receptor));
         }
         return geosphereLinkService.searchAroundReceptors(securitySession.principal(),geoReceptor, geoType,limit,skip);
     }
 
     @Override
-    public List<GeoPOD> searchAroundDocuments(ISecuritySession securitySession, String category, String receptor,String geoType,long limit,long skip) throws CircuitException {
-        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(category, receptor);
+    public List<GeoPOD> searchAroundDocuments(ISecuritySession securitySession, String receptor,String geoType,long limit,long skip) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(receptor);
         if (geoReceptor == null) {
-            throw new CircuitException("404", String.format("分类<%s>不存在地理感知器：%s。", category, receptor));
+            throw new CircuitException("404", String.format("不存在地理感知器：%s。", receptor));
         }
         return geosphereLinkService.searchAroundDocuments(securitySession.principal(),geoReceptor,geoType,limit,skip);
     }
@@ -58,35 +58,35 @@ public class GeosphereLinkPorts implements IGeosphereLinkPorts {
     }
 
     @Override
-    public void followReceptor(ISecuritySession securitySession, String category, String receptor) throws CircuitException {
-        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(category, receptor);
+    public void followReceptor(ISecuritySession securitySession,  String receptor) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor( receptor);
         if (geoReceptor == null) {
-            throw new CircuitException("404", String.format("分类<%s>不存在地理感知器：%s。", category, receptor));
+            throw new CircuitException("404", String.format("不存在地理感知器：%s。", receptor));
         }
          geosphereLinkService.followReceptor(geoReceptor,securitySession.principal());
     }
 
     @Override
-    public void unfollowReceptor(ISecuritySession securitySession, String category, String receptor) throws CircuitException {
-        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(category, receptor);
+    public void unfollowReceptor(ISecuritySession securitySession,  String receptor) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(receptor);
         if (geoReceptor == null) {
-            throw new CircuitException("404", String.format("分类<%s>不存在地理感知器：%s。", category, receptor));
+            throw new CircuitException("404", String.format("不存在地理感知器：%s。", receptor));
         }
          geosphereLinkService.unfollowReceptor(geoReceptor,securitySession.principal());
     }
 
     @Override
-    public List<GeoPOF> pageReceptorFans(ISecuritySession securitySession, String category, String receptor, long limit, long skip) throws CircuitException {
-        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(category, receptor);
+    public List<GeoPOF> pageReceptorFans(ISecuritySession securitySession, String receptor, long limit, long skip) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor( receptor);
         if (geoReceptor == null) {
-            throw new CircuitException("404", String.format("分类<%s>不存在地理感知器：%s。", category, receptor));
+            throw new CircuitException("404", String.format("不存在地理感知器：%s。", receptor));
         }
         return geosphereLinkService.pageReceptorFans(securitySession.principal(),geoReceptor,limit,skip);
     }
 
     @Override
-    public long countReceptorFans(ISecuritySession securitySession, String category, String receptor) throws CircuitException {
-        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(category, receptor);
+    public long countReceptorFans(ISecuritySession securitySession,  String receptor) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor( receptor);
         if (geoReceptor == null) {
             return 0;
         }

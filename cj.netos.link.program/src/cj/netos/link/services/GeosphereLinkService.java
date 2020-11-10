@@ -24,23 +24,23 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
     @CjServiceRef(refByName = "mongodb.netos.home")
     ICube home;
 
-    String _getReceptorColName(String category) {
-        return String.format("geo.receptor.%s", category);
+    String _getReceptorColName() {
+        return String.format("geo.receptors");
     }
 
-    String _getDocumentColName(String category) {
-        return String.format("geo.receptor.%s.docs", category);
+    String _getDocumentColName() {
+        return String.format("geo.receptor.docs");
     }
 
-    String _getFollowColName(String category) {
-        return String.format("geo.receptor.%s.follows", category);
+    String _getFollowColName() {
+        return String.format("geo.receptor.follows");
     }
 
     @Override
-    public GeoReceptor getReceptor(String category, String receptor) {
+    public GeoReceptor getReceptor(String receptor) {
         String cjql = "select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.id':'?(receptor)'}";
         IQuery<GeoReceptor> query = home.createQuery(cjql);
-        query.setParameter("colname", _getReceptorColName(category));
+        query.setParameter("colname", _getReceptorColName());
         query.setParameter("clazz", GeoReceptor.class.getName());
         query.setParameter("receptor", receptor);
         IDocument<GeoReceptor> doc = query.getSingleResult();
@@ -100,95 +100,47 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
 
     @Override
     public List<GeoPOI> searchAroundLocation(String principal, LatLng location, double radius, String geoType, long limit, long skip) {
-        LatLng latLng = location;
-        List<GeoPOI> list = new ArrayList<>();
-
-        List<GeoCategory> categories = null;
-        if (StringUtil.isEmpty(geoType)) {
-            categories = listCategory();
-        } else {
-            categories = findCategories(geoType);
+        List<String> categoryIds = new ArrayList<>();
+        if (!StringUtil.isEmpty(geoType)) {
+            String[] arr = geoType.split("\\|");
+            for (String t : arr) {
+                categoryIds.add(t);
+            }
         }
-        for (GeoCategory category : categories) {
-            List<GeoPOI> pois = _searchPoiInCategory(latLng, radius, category, limit, skip);
-            list.addAll(pois);
-        }
-        if (categories.size() > 1) {
-            //排序要
-            Collections.sort(list, new Comparator<GeoPOI>() {
-                @Override
-                public int compare(GeoPOI o1, GeoPOI o2) {
-                    if (o1.getDistance() == o2.getDistance()) {
-                        return 0;
-                    }
-                    return o1.getDistance() > o2.getDistance() ? 1 : -1;
-                }
-            });
-        }
-        return list;
+        List<GeoPOI> pois = _searchPoiInCategory(location, radius, categoryIds, limit, skip);
+        return pois;
     }
 
     @Override
     public List<GeoPOI> searchPersonAroundLocation(String principal, LatLng location, double radius, String geoType, String person) {
         LatLng latLng = location;
-        List<GeoPOI> list = new ArrayList<>();
-
-        List<GeoCategory> categories = null;
-        if (StringUtil.isEmpty(geoType)) {
-            categories = listCategory();
-        } else {
-            categories = findCategories(geoType);
+        List<String> categoryIds = new ArrayList<>();
+        if (!StringUtil.isEmpty(geoType)) {
+            String[] arr = geoType.split("\\|");
+            for (String t : arr) {
+                categoryIds.add(t);
+            }
         }
-        for (GeoCategory category : categories) {
-            List<GeoPOI> pois = _searchPoiInCategoryWherePerson(latLng, radius, category, person);
-            list.addAll(pois);
-        }
-        if (categories.size() > 1) {
-            //排序要
-            Collections.sort(list, new Comparator<GeoPOI>() {
-                @Override
-                public int compare(GeoPOI o1, GeoPOI o2) {
-                    if (o1.getDistance() == o2.getDistance()) {
-                        return 0;
-                    }
-                    return o1.getDistance() > o2.getDistance() ? 1 : -1;
-                }
-            });
-        }
-        return list;
+        List<GeoPOI> pois = _searchPoiInCategoryWherePerson(latLng, radius, categoryIds, person);
+        return pois;
     }
 
     @Override
     public List<GeoPOI> searchAroundReceptors(String person, GeoReceptor geoReceptor, String geoType, long limit, long skip) {
-        List<GeoCategory> categories = null;
-        if (StringUtil.isEmpty(geoType)) {
-            categories = listCategory();
-        } else {
-            categories = findCategories(geoType);
+        List<String> categoryIds = new ArrayList<>();
+        if (!StringUtil.isEmpty(geoType)) {
+            String[] arr = geoType.split("\\|");
+            for (String t : arr) {
+                categoryIds.add(t);
+            }
         }
         LatLng latLng = geoReceptor.getLocation();
         double radius = geoReceptor.getRadius();
-        List<GeoPOI> list = new ArrayList<>();
-        for (GeoCategory category : categories) {
-            List<GeoPOI> pois = _searchPoiInCategory(latLng, radius, category, limit, skip);
-            list.addAll(pois);
-        }
-        if (categories.size() > 1) {
-            //排序要
-            Collections.sort(list, new Comparator<GeoPOI>() {
-                @Override
-                public int compare(GeoPOI o1, GeoPOI o2) {
-                    if (o1.getDistance() == o2.getDistance()) {
-                        return 0;
-                    }
-                    return o1.getDistance() > o2.getDistance() ? 1 : -1;
-                }
-            });
-        }
-        return list;
+        List<GeoPOI> pois = _searchPoiInCategory(latLng, radius, categoryIds, limit, skip);
+        return pois;
     }
 
-    private List<GeoPOI> _searchPoiInCategory(LatLng location, double radius, GeoCategory category, long limit, long skip) {
+    private List<GeoPOI> _searchPoiInCategory(LatLng location, double radius, List<String> categoryIds, long limit, long skip) {
         //distanceField:"distance" 距离字段别称
         //"distanceMultiplier": 0.001,
         //{ $limit : 5 }
@@ -200,9 +152,18 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
                 "'spherical':true" +
                 "}" +
                 "}", location.toCoordinate(), radius);
+
         String limitjson = String.format("{'$limit':%s}", limit);
         String skipjson = String.format("{'$skip':%s}", skip);
-        AggregateIterable<Document> it = home.aggregate(_getReceptorColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(limitjson), Document.parse(skipjson)));
+        List<Document> pipeline = new ArrayList<>();
+        pipeline.add(Document.parse(json));
+        if (!categoryIds.isEmpty()) {
+            String matchjson = String.format("{'$match':{'tuple.category':{'$in':%s}}}", new Gson().toJson(categoryIds));
+            pipeline.add(Document.parse(matchjson));
+        }
+        pipeline.add(Document.parse(limitjson));
+        pipeline.add(Document.parse(skipjson));
+        AggregateIterable<Document> it = home.aggregate(_getReceptorColName(), pipeline);
         List<GeoPOI> list = new ArrayList<>();
         for (Document doc : it) {
             GeoPOI poi = GeoPOI.parse(doc);
@@ -211,7 +172,7 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         return list;
     }
 
-    private List<GeoPOI> _searchPoiInCategoryWherePerson(LatLng location, double radius, GeoCategory category, String person) {
+    private List<GeoPOI> _searchPoiInCategoryWherePerson(LatLng location, double radius, List<String> categoryIds, String person) {
         //distanceField:"distance" 距离字段别称
         //"distanceMultiplier": 0.001,
         //{ $limit : 5 }
@@ -223,8 +184,16 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
                 "'spherical':true" +
                 "}" +
                 "}", location.toCoordinate(), radius);
-        String matchjson = String.format("{'$match':{'tuple.creator':'%s'}}", person);
-        AggregateIterable<Document> it = home.aggregate(_getReceptorColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(matchjson)));
+        List<Document> pipeline = new ArrayList<>();
+        pipeline.add(Document.parse(json));
+        if (categoryIds.isEmpty()) {
+            String matchjson = String.format("{'$match':{'tuple.creator':'%s'}}", person);
+            pipeline.add(Document.parse(matchjson));
+        } else {
+            String matchjson = String.format("{'$match':{'tuple.creator':'%s','tuple.category':{'$in':%s}}}", person, new Gson().toJson(categoryIds));
+            pipeline.add(Document.parse(matchjson));
+        }
+        AggregateIterable<Document> it = home.aggregate(_getReceptorColName(), pipeline);
         List<GeoPOI> list = new ArrayList<>();
         for (Document doc : it) {
             GeoPOI poi = GeoPOI.parse(doc);
@@ -236,35 +205,20 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
 
     @Override
     public List<GeoPOD> searchAroundDocuments(String person, GeoReceptor geoReceptor, String geoType, long limit, long skip) {
-        List<GeoCategory> categories = null;
-        if (StringUtil.isEmpty(geoType)) {
-            categories = listCategory();
-        } else {
-            categories = findCategories(geoType);
+        List<String> categoryIds = new ArrayList<>();
+        if (!StringUtil.isEmpty(geoType)) {
+            String[] arr = geoType.split("\\|");
+            for (String t : arr) {
+                categoryIds.add(t);
+            }
         }
         LatLng latLng = geoReceptor.getLocation();
         double radius = geoReceptor.getRadius();
-        List<GeoPOD> list = new ArrayList<>();
-        for (GeoCategory category : categories) {
-            List<GeoPOD> pods = _searchPoDInCategory(latLng, radius, category, limit, skip);
-            list.addAll(pods);
-        }
-        if (categories.size() > 1) {
-            //排序要
-            Collections.sort(list, new Comparator<GeoPOD>() {
-                @Override
-                public int compare(GeoPOD o1, GeoPOD o2) {
-                    if (o1.getDistance() == o2.getDistance()) {
-                        return 0;
-                    }
-                    return o1.getDistance() > o2.getDistance() ? 1 : -1;
-                }
-            });
-        }
-        return list;
+        List<GeoPOD> pods = _searchPoDInCategory(latLng, radius, categoryIds, limit, skip);
+        return pods;
     }
 
-    private List<GeoPOD> _searchPoDInCategory(LatLng location, double radius, GeoCategory category, long limit, long skip) {
+    private List<GeoPOD> _searchPoDInCategory(LatLng location, double radius, List<String> categoryIds, long limit, long skip) {
         //distanceField:"distance" 距离字段别称
         //"distanceMultiplier": 0.001,
         //{ $limit : 5 }
@@ -276,13 +230,23 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
                 "'spherical':true" +
                 "}" +
                 "}", location.toCoordinate(), radius);
+
+        List<Document> pipeline = new ArrayList<>();
+        pipeline.add(Document.parse(json));
+        if (!categoryIds.isEmpty()) {
+            String matchjson = String.format("{'$match':{'tuple.category':{'$in':%s}}}", new Gson().toJson(categoryIds));
+            pipeline.add(Document.parse(matchjson));
+        }
         String limitjson = String.format("{'$limit':%s}", limit);
         String skipjson = String.format("{'$skip':%s}", skip);
         String sortjson = String.format("{'$sort':{'tuple.distance':1,'tuple.ctime':1}}");
-        AggregateIterable<Document> it = home.aggregate(_getDocumentColName(category.getId()), Arrays.asList(Document.parse(json), Document.parse(limitjson), Document.parse(skipjson), Document.parse(sortjson)));
+        pipeline.add(Document.parse(limitjson));
+        pipeline.add(Document.parse(skipjson));
+        pipeline.add(Document.parse(sortjson));
+        AggregateIterable<Document> it = home.aggregate(_getDocumentColName(), pipeline);
         List<GeoPOD> list = new ArrayList<>();
         for (Document doc : it) {
-            GeoPOD pod = GeoPOD.parse(doc, category);
+            GeoPOD pod = GeoPOD.parse(doc);
             list.add(pod);
         }
         return list;
@@ -291,7 +255,7 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
     @Override
     public void followReceptor(GeoReceptor geoReceptor, String follower) {
         unfollowReceptor(geoReceptor, follower);
-        String colname = _getFollowColName(geoReceptor.getCategory());
+        String colname = _getFollowColName();
         GeoFollow follow = new GeoFollow();
         follow.setCategory(geoReceptor.getCategory());
         follow.setReceptor(geoReceptor.getId());
@@ -302,17 +266,16 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
 
     @Override
     public void unfollowReceptor(GeoReceptor geoReceptor, String follower) {
-        String colname = _getFollowColName(geoReceptor.getCategory());
-        home.deleteDocs(colname, String.format("{'tuple.category':'%s','tuple.receptor':'%s','tuple.person':'%s'}", geoReceptor.getCategory(), geoReceptor.getId(), follower));
+        String colname = _getFollowColName();
+        home.deleteDocs(colname, String.format("{'tuple.receptor':'%s','tuple.person':'%s'}", geoReceptor.getId(), follower));
     }
 
     @Override
     public List<GeoPOF> pageReceptorFans(String person, GeoReceptor geoReceptor, long limit, long skip) {
-        String cjql = "select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.category':'?(category)','tuple.receptor':'?(receptor)'}";
+        String cjql = "select {'tuple':'*'} from tuple ?(colname) ?(clazz) where {'tuple.receptor':'?(receptor)'}";
         IQuery<GeoFollow> query = home.createQuery(cjql);
-        query.setParameter("colname", _getFollowColName(geoReceptor.getCategory()));
+        query.setParameter("colname", _getFollowColName());
         query.setParameter("clazz", GeoFollow.class.getName());
-        query.setParameter("category", geoReceptor.getCategory());
         query.setParameter("receptor", geoReceptor.getId());
         List<IDocument<GeoFollow>> docs = query.getResultList();
         List<String> ids = new ArrayList<>();
@@ -337,7 +300,7 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
                 "}" +
                 "}", latLng.toCoordinate(), radius);
         String match = String.format("{'$match':{'tuple.creator':{'$in':%s}}}", new Gson().toJson(ids));
-        AggregateIterable<Document> it = home.aggregate(_getReceptorColName("mobiles"), Arrays.asList(Document.parse(json), Document.parse(match)));
+        AggregateIterable<Document> it = home.aggregate(_getReceptorColName(), Arrays.asList(Document.parse(json), Document.parse(match)));
         List<GeoPOF> list = new ArrayList<>();
         ids.clear();
         for (Document doc : it) {
@@ -360,7 +323,7 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
     @Override
     public long countReceptorFans(GeoReceptor geoReceptor) {
         String where = String.format("{'tuple.receptor':'%s'}", geoReceptor.getId());
-        return home.tupleCount(_getFollowColName(geoReceptor.getCategory()), where);
+        return home.tupleCount(_getFollowColName(), where);
     }
 
     @Override

@@ -18,7 +18,9 @@ public class GeoDocument {
     String sourceApp;
     String receptor;
     String creator;
+    String channel;
     String category;
+    String brand;
     long ctime;
     long atime;
     long rtime;
@@ -28,6 +30,22 @@ public class GeoDocument {
     String purchaseSn;
     ///location是GEOPoi对象
     LatLng location;
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 
     public String getCategory() {
         return category;

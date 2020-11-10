@@ -8,7 +8,7 @@ import java.util.List;
 public interface IGeosphereLinkService {
     List<GeoPOI> searchAroundReceptors(String person,GeoReceptor geoReceptor, String geoType, long limit, long skip);
 
-    GeoReceptor getReceptor(String category, String receptor);
+    GeoReceptor getReceptor( String receptor);
 
     List<GeoPOD> searchAroundDocuments(String person,GeoReceptor geoReceptor, String geoType, long limit, long skip);
 
