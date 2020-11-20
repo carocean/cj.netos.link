@@ -49,11 +49,20 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
         member.setRoom(chatroom.getRoom());
         cube.saveDoc("chat.members", new TupleDocument<>(member));
     }
+//
+//    @Override
+//    public void removeRoom(String principal, String room) {
+//        ICube cube = cube(principal);
+//        cube.deleteDocOne("chat.rooms", String.format("{'tuple.room':'%s'}", room));
+//    }
 
     @Override
-    public void removeRoom(String principal, String room) {
+    public void flagDeletedRoom(String principal, String room) {
         ICube cube = cube(principal);
-        cube.deleteDocOne("chat.rooms", String.format("{'tuple.room':'%s'}", room));
+        cube.updateDocOne("chat.rooms",
+                Document.parse(String.format("{'tuple.room':'%s'}",room)),
+                Document.parse(String.format("{'$set':{'tuple.flag':1}}"))
+        );
     }
 
     @Override

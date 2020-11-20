@@ -44,7 +44,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
             //不是创建者说明是我加入的群，则将我从成员中移除
             chatroomService.removeMember(chatroom.getCreator(), room, securitySession.principal());
         }
-        chatroomService.removeRoom(securitySession.principal(), room);
+        chatroomService.flagDeletedRoom(securitySession.principal(), room);
     }
 
     @Override

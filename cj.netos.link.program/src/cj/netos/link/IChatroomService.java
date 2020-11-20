@@ -11,7 +11,9 @@ public interface IChatroomService {
 
     void addRoom(String principal,Chatroom chatroom);
 
-    void removeRoom(String principal,String room);
+//    void removeRoom(String principal,String room);
+
+    void flagDeletedRoom(String principal, String room);
 
     List<Chatroom> pageRoom(String principal,int limit ,long offset);
 

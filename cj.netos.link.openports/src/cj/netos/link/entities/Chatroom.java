@@ -7,8 +7,18 @@ public class Chatroom {
     String leading;
     String microsite;
     String background;
+    int flag;//0为可用；1为已被删除
     boolean isForegroundWhite;
     long ctime;
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
+
     public String getMicrosite() {
         return microsite;
     }
