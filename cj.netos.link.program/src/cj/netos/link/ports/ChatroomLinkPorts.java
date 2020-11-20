@@ -99,12 +99,8 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
-    public void removeMember(ISecuritySession securitySession, String room, String person) throws CircuitException {
-        Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
-        if (chatroom == null) {
-            return;
-        }
-        chatroomService.removeMember(chatroom.getCreator(), room, person);
+    public void removeMember(ISecuritySession securitySession,String roomCreator, String room) throws CircuitException {
+        chatroomService.removeMember(roomCreator,room, securitySession.principal());
     }
 
     @Override

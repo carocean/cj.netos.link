@@ -21,7 +21,7 @@ public interface IChatroomService {
 
     boolean existsMember(String principal,String room, String person);
 
-    void removeMember(String principal,String room, String person);
+    void removeMember(String roomCreator,String room, String person);
 
     List<RoomMember> pageRoomMember(String principal, String room, int limit, long offset);
 

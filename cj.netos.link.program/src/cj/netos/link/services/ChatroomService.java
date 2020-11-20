@@ -115,8 +115,8 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     }
 
     @Override
-    public void removeMember(String principal, String room, String person) {
-        ICube cube = cube(principal);
+    public void removeMember(String roomCreator,String room, String person) {
+        ICube cube = cube(roomCreator);
 //        cube.deleteDocOne("chat.members", String.format("{'tuple.person':'%s','tuple.room':'%s'}", person, room));
         cube.updateDocOne("chat.members",
                 Document.parse(String.format("{'tuple.person':'%s','tuple.room':'%s'}",person,room)),
