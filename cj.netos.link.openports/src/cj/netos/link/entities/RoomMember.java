@@ -5,9 +5,18 @@ public class RoomMember {
     String person;
     String actor;//创建者(creator)管理员(admin)，客服(servicer)，普通成员(user)
     String nickName;
+    String inviter;//邀请人
     int flag;//0为可用；1为已被删除
     boolean isShowNick;
     long atime;//加入时间
+
+    public String getInviter() {
+        return inviter;
+    }
+
+    public void setInviter(String inviter) {
+        this.inviter = inviter;
+    }
 
     public int getFlag() {
         return flag;

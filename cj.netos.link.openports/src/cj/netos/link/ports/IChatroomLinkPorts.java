@@ -53,9 +53,9 @@ public interface IChatroomLinkPorts extends IOpenportService {
     @CjOpenport(usage = "为聊天室添加成员")
     void addMemberToOwner(ISecuritySession securitySession,
                           @CjOpenportParameter(usage = "聊天室标识", name = "roomOwner") String roomOwner,
-                   @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
-                   @CjOpenportParameter(usage = "成员名", name = "person") String person,
-                   @CjOpenportParameter(usage = "成员扮演的角色，有：客服(servicer)，普通成员(user)", name = "actor") String actor) throws CircuitException;
+                          @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                          @CjOpenportParameter(usage = "成员名", name = "person") String person,
+                          @CjOpenportParameter(usage = "成员扮演的角色，有：客服(servicer)，普通成员(user)", name = "actor") String actor) throws CircuitException;
 
 
     @CjOpenport(usage = "将自己从聊天室里移除")
@@ -69,6 +69,12 @@ public interface IChatroomLinkPorts extends IOpenportService {
                                     @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
                                     @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
                                     @CjOpenportParameter(usage = "当前偏移", name = "offset") long offset) throws CircuitException;
+
+    @CjOpenport(usage = "查询被标记移除的的所有成员")
+    List<String> listFlagRoomMember(ISecuritySession securitySession,
+                                    @CjOpenportParameter(usage = "聊天室的创建者", name = "room") String roomCreator,
+                                    @CjOpenportParameter(usage = "聊天室标识", name = "room") String room
+    ) throws CircuitException;
 
     @CjOpenport(usage = "获取访问者在聊天室的成员属性")
     RoomMember getRoomMember(

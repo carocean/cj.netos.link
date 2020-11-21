@@ -58,7 +58,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
-    public List<Chatroom> pageRoom(ISecuritySession securitySession,  int limit, long offset) throws CircuitException {
+    public List<Chatroom> pageRoom(ISecuritySession securitySession, int limit, long offset) throws CircuitException {
         return chatroomService.pageRoom(securitySession.principal(), limit, offset);
     }
 
@@ -99,8 +99,8 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
-    public void removeMember(ISecuritySession securitySession,String roomCreator, String room) throws CircuitException {
-        chatroomService.removeMember(roomCreator,room, securitySession.principal());
+    public void removeMember(ISecuritySession securitySession, String roomCreator, String room) throws CircuitException {
+        chatroomService.removeMember(roomCreator, room, securitySession.principal());
     }
 
     @Override
@@ -110,6 +110,11 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
             return new ArrayList<>();
         }
         return chatroomService.pageRoomMember(chatroom.getCreator(), room, limit, offset);
+    }
+
+    @Override
+    public List<String> listFlagRoomMember(ISecuritySession securitySession, String roomCreator, String room) throws CircuitException {
+        return chatroomService.listFlagRoomMember(roomCreator, room);
     }
 
     @Override
@@ -159,7 +164,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (chatroom == null) {
             throw new CircuitException("404", "聊天室不存在");
         }
-        chatroomService.updateBackground(chatroom.getCreator(), room,  background);
+        chatroomService.updateBackground(chatroom.getCreator(), room, background);
     }
 
     @Override
@@ -168,7 +173,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (chatroom == null) {
             throw new CircuitException("404", "聊天室不存在");
         }
-        chatroomService.updateRoomForeground(chatroom.getCreator(), room,  isForegroundWhite);
+        chatroomService.updateRoomForeground(chatroom.getCreator(), room, isForegroundWhite);
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CjService(name = "chatroomService")
 public class ChatroomService extends AbstractLinkService implements IChatroomService {
@@ -60,7 +61,7 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     public void flagDeletedRoom(String principal, String room) {
         ICube cube = cube(principal);
         cube.updateDocOne("chat.rooms",
-                Document.parse(String.format("{'tuple.room':'%s'}",room)),
+                Document.parse(String.format("{'tuple.room':'%s'}", room)),
                 Document.parse(String.format("{'$set':{'tuple.flag':1}}"))
         );
     }
@@ -68,7 +69,7 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     @Override
     public List<Chatroom> pageRoom(String principal, int limit, long offset) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple chat.rooms %s where {'tuple.creator':'%s'}", limit, offset, Chatroom.class.getName(), principal);
+        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple chat.rooms %s where {'tuple.creator':'%s','tuple.flag':{'$ne':1}}", limit, offset, Chatroom.class.getName(), principal);
         IQuery<Chatroom> query = cube.createQuery(cjql);
         List<IDocument<Chatroom>> docs = query.getResultList();
         List<Chatroom> chatrooms = new ArrayList<>();
@@ -115,11 +116,11 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     }
 
     @Override
-    public void removeMember(String roomCreator,String room, String person) {
+    public void removeMember(String roomCreator, String room, String person) {
         ICube cube = cube(roomCreator);
 //        cube.deleteDocOne("chat.members", String.format("{'tuple.person':'%s','tuple.room':'%s'}", person, room));
         cube.updateDocOne("chat.members",
-                Document.parse(String.format("{'tuple.person':'%s','tuple.room':'%s'}",person,room)),
+                Document.parse(String.format("{'tuple.person':'%s','tuple.room':'%s'}", person, room)),
                 Document.parse(String.format("{'$set':{'tuple.flag':1}}"))
         );
     }
@@ -127,7 +128,7 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     @Override
     public List<RoomMember> pageRoomMember(String principal, String room, int limit, long offset) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple chat.members %s where {'tuple.room':'%s'}  ", limit, offset, RoomMember.class.getName(), room);
+        String cjql = String.format("select {'tuple':'*'}.limit(%s).skip(%s) from tuple chat.members %s where {'tuple.room':'%s','tuple.flag':{'$ne':1}}  ", limit, offset, RoomMember.class.getName(), room);
         IQuery<RoomMember> query = cube.createQuery(cjql);
         List<IDocument<RoomMember>> docs = query.getResultList();
         List<RoomMember> members = new ArrayList<>();
@@ -139,9 +140,22 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     }
 
     @Override
+    public List<String> listFlagRoomMember(String roomCreator, String room) {
+        ICube cube = cube(roomCreator);
+        String cjql = String.format("select {'tuple.person':1} from tuple chat.members %s where {'tuple.room':'%s','tuple.flag':1}  ", String.class.getName(), room);
+        IQuery<String> query = cube.createQuery(cjql);
+        List<IDocument<String>> docs = query.getResultList();
+        List<String> members = new ArrayList<>();
+        for (IDocument<String> doc : docs) {
+            members.add(doc.tuple());
+        }
+        return members;
+    }
+
+    @Override
     public List<RoomMember> getActorRoomMembers(String principal, String room, String actor) {
         ICube cube = cube(principal);
-        String cjql = String.format("select {'tuple':'*'} from tuple chat.members %s where {'tuple.room':'%s','tuple.actor':'%s'}", RoomMember.class.getName(), room, actor);
+        String cjql = String.format("select {'tuple':'*'} from tuple chat.members %s where {'tuple.room':'%s','tuple.flag':{'$ne':1},'tuple.actor':'%s'}", RoomMember.class.getName(), room, actor);
         IQuery<RoomMember> query = cube.createQuery(cjql);
         List<IDocument<RoomMember>> docs = query.getResultList();
         List<RoomMember> members = new ArrayList<>();

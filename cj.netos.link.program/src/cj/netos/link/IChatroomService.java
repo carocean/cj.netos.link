@@ -53,5 +53,7 @@ public interface IChatroomService {
 
     void updateRoomForeground(String creator, String room, boolean isForegroundWhite);
 
+    List<String> listFlagRoomMember(String roomCreator, String room);
+
 }
 
