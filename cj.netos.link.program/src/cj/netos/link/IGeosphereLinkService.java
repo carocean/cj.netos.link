@@ -27,4 +27,8 @@ public interface IGeosphereLinkService {
 
     List<GeoPOI> searchPersonAroundLocation(String principal, LatLng location, double radius, String geoType, String person);
 
+    void updateFollowRights(GeoReceptor geoReceptor, String fans,String rights);
+
+    boolean isDenyFollowSpeak(GeoReceptor geoReceptor, String principal);
+
 }

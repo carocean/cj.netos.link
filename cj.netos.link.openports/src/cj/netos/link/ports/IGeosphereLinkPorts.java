@@ -41,7 +41,7 @@ public interface IGeosphereLinkPorts extends IOpenportService {
     ) throws CircuitException;
 
     @CjOpenportAppSecurity
-    @CjOpenport(usage = "查询指定圆周内的指定类型的感知器，并计算离圆心的距离",tokenIn = AccessTokenIn.nope)
+    @CjOpenport(usage = "查询指定圆周内的指定类型的感知器，并计算离圆心的距离", tokenIn = AccessTokenIn.nope)
     List<GeoPOI> searchAroundLocation(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "搜索位置", name = "location") LatLng location,
@@ -52,7 +52,7 @@ public interface IGeosphereLinkPorts extends IOpenportService {
     ) throws CircuitException;
 
     @CjOpenportAppSecurity
-    @CjOpenport(usage = "查询指定圆周内的指定类型和用户的感知器，并计算离圆心的距离",tokenIn = AccessTokenIn.nope)
+    @CjOpenport(usage = "查询指定圆周内的指定类型和用户的感知器，并计算离圆心的距离", tokenIn = AccessTokenIn.nope)
     List<GeoPOI> searchPersonAroundLocation(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "搜索位置", name = "location") LatLng location,
@@ -69,6 +69,26 @@ public interface IGeosphereLinkPorts extends IOpenportService {
 
     @CjOpenport(usage = "我不再关注指定的感知器")
     void unfollowReceptor(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "充许指定的粉丝发言，只有感知器创建人有权使用")
+    void allowFollowSpeak(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor,
+            @CjOpenportParameter(usage = "要充许的粉丝", name = "fans") String fans
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "禁止指定的粉丝发言，只有感知器创建人有权使用")
+    void denyFollowSpeak(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor,
+                    @CjOpenportParameter(usage = "要禁言的粉丝", name = "fans") String fans
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "是否禁言了指定的粉丝发言")
+    boolean isDenyFollowSpeak(
             ISecuritySession securitySession,
             @CjOpenportParameter(usage = "感知器标识", name = "receptor") String receptor
     ) throws CircuitException;

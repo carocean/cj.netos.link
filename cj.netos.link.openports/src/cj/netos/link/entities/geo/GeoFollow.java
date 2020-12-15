@@ -4,7 +4,16 @@ public class GeoFollow {
     String category;
     String receptor;
     String person;
+    String rights;//allowSpeak|denySpeak
     long ctime;
+
+    public String getRights() {
+        return rights;
+    }
+
+    public void setRights(String rights) {
+        this.rights = rights;
+    }
 
     public String getCategory() {
         return category;

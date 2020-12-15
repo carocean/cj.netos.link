@@ -76,6 +76,39 @@ public class GeosphereLinkPorts implements IGeosphereLinkPorts {
     }
 
     @Override
+    public void allowFollowSpeak(ISecuritySession securitySession, String receptor,String fans) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(receptor);
+        if (geoReceptor == null) {
+            throw new CircuitException("404", String.format("不存在地理感知器：%s。", receptor));
+        }
+        if (!securitySession.principal().equals(geoReceptor.getCreator())) {
+            throw new CircuitException("801", String.format("不是感知器拥有者，禁止访问。"));
+        }
+        geosphereLinkService.updateFollowRights(geoReceptor,fans,"allowSpeak");
+    }
+
+    @Override
+    public void denyFollowSpeak(ISecuritySession securitySession, String receptor,String fans) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(receptor);
+        if (geoReceptor == null) {
+            throw new CircuitException("404", String.format("不存在地理感知器：%s。", receptor));
+        }
+        if (!securitySession.principal().equals(geoReceptor.getCreator())) {
+            throw new CircuitException("801", String.format("不是感知器拥有者，禁止访问。"));
+        }
+        geosphereLinkService.updateFollowRights(geoReceptor,fans,"denySpeak");
+    }
+
+    @Override
+    public boolean isDenyFollowSpeak(ISecuritySession securitySession, String receptor) throws CircuitException {
+        GeoReceptor geoReceptor = geosphereLinkService.getReceptor(receptor);
+        if (geoReceptor == null) {
+            return false;
+        }
+        return geosphereLinkService.isDenyFollowSpeak(geoReceptor,securitySession.principal());
+    }
+
+    @Override
     public List<GeoPOF> pageReceptorFans(ISecuritySession securitySession, String receptor, long limit, long skip) throws CircuitException {
         GeoReceptor geoReceptor = geosphereLinkService.getReceptor( receptor);
         if (geoReceptor == null) {

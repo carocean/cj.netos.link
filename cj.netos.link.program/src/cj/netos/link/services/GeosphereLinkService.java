@@ -260,6 +260,7 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         follow.setCategory(geoReceptor.getCategory());
         follow.setReceptor(geoReceptor.getId());
         follow.setPerson(follower);
+        follow.setRights("allowSpeak");
         follow.setCtime(System.currentTimeMillis());
         home.saveDoc(colname, new TupleDocument<>(follow));
     }
@@ -268,6 +269,20 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
     public void unfollowReceptor(GeoReceptor geoReceptor, String follower) {
         String colname = _getFollowColName();
         home.deleteDocs(colname, String.format("{'tuple.receptor':'%s','tuple.person':'%s'}", geoReceptor.getId(), follower));
+    }
+
+    @Override
+    public void updateFollowRights(GeoReceptor geoReceptor, String fans, String rights) {
+        String colname = _getFollowColName();
+        home.updateDocOne(colname,
+                Document.parse(String.format("{'tuple.receptor':'%s','tuple.person':'%s'}", geoReceptor.getId(), fans)),
+                Document.parse(String.format("{'$set':{'tuple.rights':'%s'}}",rights)));
+    }
+
+    @Override
+    public boolean isDenyFollowSpeak(GeoReceptor geoReceptor, String principal) {
+        String colname = _getFollowColName();
+        return home.tupleCount(colname,String.format("{'tuple.receptor':'%s','tuple.person':'%s','tuple.rights':'denySpeak'}",geoReceptor.getId(),principal))>0;
     }
 
     @Override
@@ -281,8 +296,12 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         List<String> ids = new ArrayList<>();
         Map<String, GeoFollow> follows = new HashMap<>();
         for (IDocument<GeoFollow> doc : docs) {
-            ids.add(doc.tuple().getPerson());
-            follows.put(doc.tuple().getPerson(), doc.tuple());
+            GeoFollow follow=doc.tuple();
+            if (StringUtil.isEmpty(follow.getRights())) {
+                follow.setRights("allowSpeak");
+            }
+            ids.add(follow.getPerson());
+            follows.put(follow.getPerson(), follow);
         }
         LatLng latLng = geoReceptor.getLocation();
         //由于粉丝不在感知器半径内，也能收到消息，所以设为最大公里数求粉丝
