@@ -6,10 +6,19 @@ public class Channel {
     String leading;
     String creator;
     String upstreamPerson;
+    String sourceCreator;//源管道的创建者
     String inPersonSelector;
     String outPersonSelector;//only_select, all_except,
     String outGeoSelector;//true,false;
     long ctime;
+
+    public String getSourceCreator() {
+        return sourceCreator;
+    }
+
+    public void setSourceCreator(String sourceCreator) {
+        this.sourceCreator = sourceCreator;
+    }
 
     public String getInPersonSelector() {
         return inPersonSelector;

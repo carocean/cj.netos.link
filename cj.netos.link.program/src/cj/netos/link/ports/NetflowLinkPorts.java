@@ -35,6 +35,15 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
         ch.setOutGeoSelector(outGeoSelector);
         ch.setTitle(title);
         ch.setUpstreamPerson(StringUtil.isEmpty(upstreamPerson) ? securitySession.principal() : upstreamPerson);
+        if (!StringUtil.isEmpty(ch.getUpstreamPerson()) && !ch.getUpstreamPerson().equals(ch.getCreator())) {
+            Channel upstream=netflowLinkService.getPersonChannel(ch.getUpstreamPerson(),ch.getChannel());
+            if (upstream != null) {
+                ch.setSourceCreator(upstream.getSourceCreator());
+            }
+        }
+        if (StringUtil.isEmpty(ch.getSourceCreator())) {
+            ch.setSourceCreator(securitySession.principal());
+        }
         netflowLinkService.addChannel(securitySession.principal(), ch);
     }
 
