@@ -72,7 +72,7 @@ public interface IChatroomLinkPorts extends IOpenportService {
 
     @CjOpenport(usage = "查询被标记移除的的所有成员")
     List<String> listFlagRoomMember(ISecuritySession securitySession,
-                                    @CjOpenportParameter(usage = "聊天室的创建者", name = "room") String roomCreator,
+                                    @CjOpenportParameter(usage = "聊天室的创建者", name = "roomCreator") String roomCreator,
                                     @CjOpenportParameter(usage = "聊天室标识", name = "room") String room
     ) throws CircuitException;
 

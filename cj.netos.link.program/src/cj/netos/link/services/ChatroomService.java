@@ -13,6 +13,7 @@ import cj.studio.ecm.annotation.CjService;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -142,12 +143,12 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     @Override
     public List<String> listFlagRoomMember(String roomCreator, String room) {
         ICube cube = cube(roomCreator);
-        String cjql = String.format("select {'tuple.person':1} from tuple chat.members %s where {'tuple.room':'%s','tuple.flag':1}  ", String.class.getName(), room);
-        IQuery<String> query = cube.createQuery(cjql);
-        List<IDocument<String>> docs = query.getResultList();
+        String cjql = String.format("select {'tuple.person':1} from tuple chat.members %s where {'tuple.room':'%s','tuple.flag':1}  ", HashMap.class.getName(), room);
+        IQuery<Map<String,String>> query = cube.createQuery(cjql);
+        List<IDocument<Map<String,String>>> docs = query.getResultList();
         List<String> members = new ArrayList<>();
-        for (IDocument<String> doc : docs) {
-            members.add(doc.tuple());
+        for (IDocument<Map<String,String>> doc : docs) {
+            members.add(doc.tuple().get("person"));
         }
         return members;
     }

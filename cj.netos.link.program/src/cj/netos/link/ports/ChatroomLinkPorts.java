@@ -4,6 +4,7 @@ import cj.netos.link.IChatroomService;
 import cj.netos.link.entities.Chatroom;
 import cj.netos.link.entities.RoomMember;
 import cj.netos.link.entities.RoomNotice;
+import cj.studio.ecm.CJSystem;
 import cj.studio.ecm.annotation.CjService;
 import cj.studio.ecm.annotation.CjServiceRef;
 import cj.studio.ecm.net.CircuitException;
@@ -114,7 +115,12 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
 
     @Override
     public List<String> listFlagRoomMember(ISecuritySession securitySession, String roomCreator, String room) throws CircuitException {
-        return chatroomService.listFlagRoomMember(roomCreator, room);
+        try {
+            return chatroomService.listFlagRoomMember(roomCreator, room);
+        }catch (Exception e){
+            CJSystem.logging().error(getClass(),e);
+            throw new CircuitException("500",e);
+        }
     }
 
     @Override
