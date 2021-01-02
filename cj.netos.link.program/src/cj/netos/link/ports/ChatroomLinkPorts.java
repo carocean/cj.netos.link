@@ -69,16 +69,7 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (chatroom == null) {
             throw new CircuitException("500", String.format("不存在聊天室。%s %s", securitySession.principal(), room));
         }
-        if (chatroomService.existsMember(chatroom.getCreator(), room, person)) {
-            throw new CircuitException("500", "成员已在聊天室。");
-        }
-        RoomMember member = new RoomMember();
-        member.setActor(actor);
-        member.setAtime(System.currentTimeMillis());
-        member.setNickName(null);
-        member.setPerson(person);
-        member.setRoom(room);
-        chatroomService.addMember(chatroom.getCreator(), member);
+        _addMember(securitySession.principal(), chatroom, room, person, actor);
     }
 
     @Override
@@ -87,8 +78,20 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
         if (chatroom == null) {
             throw new CircuitException("500", String.format("不存在聊天室。%s %s", securitySession.principal(), room));
         }
-        if (chatroomService.existsMember(chatroom.getCreator(), room, person)) {
-            throw new CircuitException("500", "成员已在聊天室。");
+        _addMember(securitySession.principal(), chatroom, room, person, actor);
+    }
+
+    private void _addMember(String principal, Chatroom chatroom, String room, String person, String actor) throws CircuitException {
+        RoomMember exists = chatroomService.getRoomMember(chatroom, person);
+        if (exists != null) {
+            if (exists.getFlag() == 1) {
+                if (principal.equals(chatroom.getCreator()) || principal.equals(person)) {//对于标记为删除的成员，如果是管理员或是他自己可以重新入群
+                    chatroomService.updateFlag(chatroom.getCreator(), exists.getRoom(), person, 0);
+                    return;
+                }
+                throw new CircuitException("10004", "成员已退群，你无权拉入。");
+            }
+            throw new CircuitException("10003", "成员已在聊天室。");
         }
         RoomMember member = new RoomMember();
         member.setActor(actor);
@@ -105,6 +108,11 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
+    public void removeMemberOnlyByCreator(ISecuritySession securitySession, String room, String member) throws CircuitException {
+        chatroomService.removeMember(securitySession.principal(), room, member);
+    }
+
+    @Override
     public List<RoomMember> pageRoomMember(ISecuritySession securitySession, String room, int limit, long offset) throws CircuitException {
         Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
         if (chatroom == null) {
@@ -117,10 +125,15 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     public List<String> listFlagRoomMember(ISecuritySession securitySession, String roomCreator, String room) throws CircuitException {
         try {
             return chatroomService.listFlagRoomMember(roomCreator, room);
-        }catch (Exception e){
-            CJSystem.logging().error(getClass(),e);
-            throw new CircuitException("500",e);
+        } catch (Exception e) {
+            CJSystem.logging().error(getClass(), e);
+            throw new CircuitException("500", e);
         }
+    }
+
+    @Override
+    public long totalRoomMember(ISecuritySession securitySession, String roomCreator, String room) throws CircuitException {
+        return chatroomService.totalRoomMember(roomCreator, room);
     }
 
     @Override

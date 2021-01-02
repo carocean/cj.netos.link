@@ -63,6 +63,11 @@ public interface IChatroomLinkPorts extends IOpenportService {
                       @CjOpenportParameter(usage = "聊天室的创建者", name = "roomCreator") String roomCreator,
                       @CjOpenportParameter(usage = "聊天室标识", name = "room") String room) throws CircuitException;
 
+    @CjOpenport(usage = "聊天室创建者移除指定的成员")
+    void removeMemberOnlyByCreator(ISecuritySession securitySession,
+                                   @CjOpenportParameter(usage = "聊天室标识", name = "room") String room,
+                                   @CjOpenportParameter(usage = "成员", name = "member") String member
+    ) throws CircuitException;
 
     @CjOpenport(usage = "分页查询任意角色的成员")
     List<RoomMember> pageRoomMember(ISecuritySession securitySession,
@@ -76,6 +81,11 @@ public interface IChatroomLinkPorts extends IOpenportService {
                                     @CjOpenportParameter(usage = "聊天室标识", name = "room") String room
     ) throws CircuitException;
 
+    @CjOpenport(usage = "统计成员数")
+    long totalRoomMember(ISecuritySession securitySession,
+                                    @CjOpenportParameter(usage = "聊天室的创建者", name = "roomCreator") String roomCreator,
+                                    @CjOpenportParameter(usage = "聊天室标识", name = "room") String room
+    ) throws CircuitException;
     @CjOpenport(usage = "获取访问者在聊天室的成员属性")
     RoomMember getRoomMember(
             ISecuritySession securitySession,

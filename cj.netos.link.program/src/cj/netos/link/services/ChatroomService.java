@@ -216,6 +216,20 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
     }
 
     @Override
+    public void updateFlag(String creator, String room, String person,int flag) {
+        ICube cube = cube(creator);
+        cube.updateDocOne("chat.members",
+                Document.parse(String.format("{'tuple.room':'%s','tuple.person':'%s'}", room,person)),
+                Document.parse(String.format("{'$set':{'tuple.flag':%s}}",flag)));
+    }
+
+    @Override
+    public long totalRoomMember(String roomCreator, String room) {
+        ICube cube = cube(roomCreator);
+        return cube.tupleCount("chat.members",String.format("{'tuple.room':'%s','tuple.flag':0}",room));
+    }
+
+    @Override
     public void addNotice(String principal, RoomNotice roomNotice) {
         ICube cube = cube(principal);
         cube.saveDoc("chat.notices", new TupleDocument<>(roomNotice));

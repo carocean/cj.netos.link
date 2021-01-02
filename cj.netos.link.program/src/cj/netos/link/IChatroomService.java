@@ -55,5 +55,9 @@ public interface IChatroomService {
 
     List<String> listFlagRoomMember(String roomCreator, String room);
 
+    void updateFlag(String creator, String room, String person,int flag);
+
+    long totalRoomMember(String roomCreator, String room);
+
 }
 
