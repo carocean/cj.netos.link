@@ -76,6 +76,27 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     }
 
     @Override
+    public void recoverChannel(String principal, String channel) {
+        ICube cube = cube(principal);
+        cube.updateDocOne("channels", Document.parse(String.format("{'tuple.channel':'%s'}", channel)),
+                Document.parse("{'$set':{'tuple.delFlag':0}}"));
+    }
+
+    @Override
+    public List<Channel> pageMyDeletedChannel(String principal, int limit, long offset) {
+        ICube cube = cube(principal);
+        String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':-1}).limit(%s).skip(%s) from tuple channels %s where {'tuple.delFlag':1}", limit, offset, Channel.class.getName());
+        IQuery<Channel> query = cube.createQuery(cjql);
+        List<IDocument<Channel>> docs = query.getResultList();
+        List<Channel> channels = new ArrayList<>();
+        for (IDocument<Channel> doc : docs) {
+            channels.add(doc.tuple()
+            );
+        }
+        return channels;
+    }
+
+    @Override
     public List<Channel> pageChannel(String principal, int limit, long offset) {
         ICube cube = cube(principal);
         String cjql = String.format("select {'tuple':'*'}.sort({'tuple.ctime':-1}).limit(%s).skip(%s) from tuple channels %s where {'tuple.delFlag':{'$ne':1}}", limit, offset, Channel.class.getName());

@@ -158,7 +158,10 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         List<Document> pipeline = new ArrayList<>();
         pipeline.add(Document.parse(json));
         if (!categoryIds.isEmpty()) {
-            String matchjson = String.format("{'$match':{'tuple.category':{'$in':%s}}}", new Gson().toJson(categoryIds));
+            String matchjson = String.format("{'$match':{'tuple.category':{'$in':%s},'tuple.delFlag':{'$ne':1}}}", new Gson().toJson(categoryIds));
+            pipeline.add(Document.parse(matchjson));
+        }else{
+            String matchjson = "{'$match':{'tuple.delFlag':{'$ne':1}}}";
             pipeline.add(Document.parse(matchjson));
         }
         pipeline.add(Document.parse(limitjson));
@@ -187,10 +190,10 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
         List<Document> pipeline = new ArrayList<>();
         pipeline.add(Document.parse(json));
         if (categoryIds.isEmpty()) {
-            String matchjson = String.format("{'$match':{'tuple.creator':'%s'}}", person);
+            String matchjson = String.format("{'$match':{'tuple.creator':'%s','tuple.delFlag':{'$ne':1}}}", person);
             pipeline.add(Document.parse(matchjson));
         } else {
-            String matchjson = String.format("{'$match':{'tuple.creator':'%s','tuple.category':{'$in':%s}}}", person, new Gson().toJson(categoryIds));
+            String matchjson = String.format("{'$match':{'tuple.creator':'%s','tuple.delFlag':{'$ne':1},'tuple.category':{'$in':%s}}}", person, new Gson().toJson(categoryIds));
             pipeline.add(Document.parse(matchjson));
         }
         AggregateIterable<Document> it = home.aggregate(_getReceptorColName(), pipeline);
@@ -318,7 +321,7 @@ public class GeosphereLinkService extends AbstractLinkService implements IGeosph
                 "'spherical':true" +
                 "}" +
                 "}", latLng.toCoordinate(), radius);
-        String match = String.format("{'$match':{'tuple.creator':{'$in':%s}}}", new Gson().toJson(ids));
+        String match = String.format("{'$match':{'tuple.creator':{'$in':%s},'tuple.delFlag':{'$ne':1}}}", new Gson().toJson(ids));
         AggregateIterable<Document> it = home.aggregate(_getReceptorColName(), Arrays.asList(Document.parse(json), Document.parse(match)));
         List<GeoPOF> list = new ArrayList<>();
         ids.clear();

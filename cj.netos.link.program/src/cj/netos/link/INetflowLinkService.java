@@ -64,4 +64,8 @@ public interface INetflowLinkService {
 
     List<ChannelOutputPerson> listAllOutputPerson(String principal, String channel, long atime);
 
+    void recoverChannel(String principal, String channel);
+
+    List<Channel> pageMyDeletedChannel(String principal, int limit, long offset);
+
 }

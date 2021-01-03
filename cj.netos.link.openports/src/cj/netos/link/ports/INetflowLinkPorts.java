@@ -61,6 +61,19 @@ public interface INetflowLinkPorts extends IOpenportService {
             @CjOpenportParameter(usage = "管道号。", name = "channel") String channel
     ) throws CircuitException;
 
+    @CjOpenport(usage = "查询我的已删除的管道")
+    List<Channel> pageMyDeletedChannel(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "页大小", name = "limit") int limit,
+            @CjOpenportParameter(usage = "当前位置", name = "offset") long offset
+    ) throws CircuitException;
+
+    @CjOpenport(usage = "恢复我的已删的管道")
+    void recoverChannel(
+            ISecuritySession securitySession,
+            @CjOpenportParameter(usage = "感知器标识", name = "id") String id
+    ) throws CircuitException;
+
     @CjOpenport(usage = "列出当前访问者的管道")
     List<Channel> pageChannel(
             ISecuritySession securitySession,

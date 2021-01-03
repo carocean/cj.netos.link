@@ -73,6 +73,16 @@ public class NetflowLinkPorts implements INetflowLinkPorts {
     }
 
     @Override
+    public List<Channel> pageMyDeletedChannel(ISecuritySession securitySession, int limit, long offset) throws CircuitException {
+        return netflowLinkService.pageMyDeletedChannel(securitySession.principal(), limit, offset);
+    }
+
+    @Override
+    public void recoverChannel(ISecuritySession securitySession, String channel) throws CircuitException {
+        netflowLinkService.recoverChannel(securitySession.principal(), channel);
+    }
+
+    @Override
     public List<Channel> pageChannel(ISecuritySession securitySession, int limit, long offset) throws CircuitException {
         return netflowLinkService.pageChannel(securitySession.principal(), limit, offset);
     }
