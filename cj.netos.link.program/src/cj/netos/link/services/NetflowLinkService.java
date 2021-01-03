@@ -67,12 +67,12 @@ public class NetflowLinkService extends AbstractLinkService implements INetflowL
     public void removeChannel(String principal, String channel) {
         ICube cube = cube(principal);
         Channel ch=getMyChannel(principal,channel);
-        if (ch != null && !ch.getCreator().equals(ch.getSourceCreator())) {
-            cube.deleteDocOne("channels", String.format("{'tuple.channel':'%s'}", channel));
+        if (ch != null && ch.getCreator().equals(ch.getSourceCreator())&&ch.getCreator().equals(ch.getUpstreamPerson())) {
+            cube.updateDocOne("channels", Document.parse(String.format("{'tuple.channel':'%s'}", channel)),
+                    Document.parse("{'$set':{'tuple.delFlag':1}}"));
             return;
         }
-        cube.updateDocOne("channels", Document.parse(String.format("{'tuple.channel':'%s'}", channel)),
-                Document.parse("{'$set':{'tuple.delFlag':1}}"));
+        cube.deleteDocOne("channels", String.format("{'tuple.channel':'%s'}", channel));
     }
 
     @Override
