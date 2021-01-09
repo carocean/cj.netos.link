@@ -9,7 +9,16 @@ public class Chatroom {
     String background;
     int flag;//0为可用；1为已被删除
     boolean isForegroundWhite;
+    boolean isSeal;//是否封群
     long ctime;
+
+    public boolean isSeal() {
+        return isSeal;
+    }
+
+    public void setSeal(boolean seal) {
+        isSeal = seal;
+    }
 
     public int getFlag() {
         return flag;

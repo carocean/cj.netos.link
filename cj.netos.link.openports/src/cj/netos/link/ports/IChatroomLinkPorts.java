@@ -23,6 +23,13 @@ public interface IChatroomLinkPorts extends IOpenportService {
                     @CjOpenportParameter(usage = "聊天室头像", name = "leading") String leading,
                     @CjOpenportParameter(usage = "聊天室关联站点", name = "microsite") String microsite) throws CircuitException;
 
+    @CjOpenport(usage = "封聊天室，只有管理员能拉新")
+    void sealRoom(ISecuritySession securitySession,
+                    @CjOpenportParameter(usage = "聊天室标识", name = "room") String room) throws CircuitException;
+
+    @CjOpenport(usage = "封聊天室，只有管理员能拉新")
+    void unsealRoom(ISecuritySession securitySession,
+                  @CjOpenportParameter(usage = "聊天室标识", name = "room") String room) throws CircuitException;
 
     @CjOpenport(usage = "移除聊天室")
     void removeRoom(ISecuritySession securitySession,

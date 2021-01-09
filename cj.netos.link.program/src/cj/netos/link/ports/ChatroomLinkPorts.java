@@ -49,6 +49,24 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     @Override
+    public void sealRoom(ISecuritySession securitySession, String room) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
+        if (chatroom == null) {
+            return;
+        }
+        chatroomService.updateSeal(securitySession.principal(),room,true);
+    }
+
+    @Override
+    public void unsealRoom(ISecuritySession securitySession, String room) throws CircuitException {
+        Chatroom chatroom = chatroomService.getRoom(securitySession.principal(), room);
+        if (chatroom == null) {
+            return;
+        }
+        chatroomService.updateSeal(securitySession.principal(),room,false);
+    }
+
+    @Override
     public Chatroom getRoom(ISecuritySession securitySession, String room) throws CircuitException {
         return chatroomService.getRoom(securitySession.principal(), room);
     }
@@ -82,6 +100,9 @@ public class ChatroomLinkPorts implements IChatroomLinkPorts {
     }
 
     private void _addMember(String principal, Chatroom chatroom, String room, String person, String actor) throws CircuitException {
+        if (chatroom.isSeal()&&!principal.equals(chatroom.getCreator())) {
+            throw new CircuitException("500",String.format("已封群，只有管理员能添加成员"));
+        }
         RoomMember exists = chatroomService.getRoomMember(chatroom, person);
         if (exists != null) {
             if (exists.getFlag() == 1) {

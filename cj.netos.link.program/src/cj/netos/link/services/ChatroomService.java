@@ -37,6 +37,13 @@ public class ChatroomService extends AbstractLinkService implements IChatroomSer
         return doc.tuple();
     }
 
+    @Override
+    public void updateSeal(String principal,String room, boolean isSeal) {
+        ICube cube = cube(principal);
+        cube.updateDocOne("chat.rooms",
+                Document.parse(String.format("{'tuple.room':'%s'}", room)),
+                Document.parse(String.format("{'$set':{'tuple.isSeal':%s}}", isSeal)));
+    }
 
     @Override
     public void addRoom(String principal, Chatroom chatroom) {

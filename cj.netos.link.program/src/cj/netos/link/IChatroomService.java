@@ -59,5 +59,7 @@ public interface IChatroomService {
 
     long totalRoomMember(String roomCreator, String room);
 
+    void updateSeal(String principal,String room, boolean isSeal);
+
 }
 
